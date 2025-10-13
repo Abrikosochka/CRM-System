@@ -1,1 +1,32 @@
+html {
+  font-size: 1.5rem;
+}
 
+* {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-size: calc(16px + 0.3vw);
+  width: 100vw;
+}
+
+*|* {
+  font-family: "Zalando Sans";
+}
+
+button {
+  background-color: royalblue;
+  color: white;
+  border: 1px solid royalblue;
+  border-radius: 0.3em;
+  padding: 0.5em;
+  font-size: 0.7em;
+}
+
+button:hover {
+  cursor: pointer;
+  background-color: royalblue;
+  opacity: 90%;
+}

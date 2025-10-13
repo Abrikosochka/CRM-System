@@ -1,8 +1,9 @@
+import "./taskList.css"
 import Task from "../task/Task"
 
 const TaskList = () => {
   return (
-    <div>
+    <div className="tasks-list">
       <Task></Task>
       <Task></Task>
       <Task></Task>

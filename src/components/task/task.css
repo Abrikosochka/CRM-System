@@ -1,0 +1,46 @@
+.task {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border: 2px solid royalblue;
+  padding: 0.5em;
+  border-radius: 1em;
+  width: calc(30vw + 15em);
+}
+
+p {
+  font-size: 0.9em;
+}
+
+.task-header {
+  display: flex;
+  gap: 0.5em;
+  display: flex;
+  align-items: center;
+}
+
+.task-header input:hover {
+  cursor: pointer;
+}
+
+.task-buttons {
+  display: flex;
+  gap: 0.5em;
+}
+
+.delete {
+  background-color: red;
+  border: 1px solid red;
+}
+
+.delete:hover {
+  background-color: red;
+  border: 1px solid red;
+  opacity: 80%;
+}
+
+@media (max-width: 768px) {
+  .task {
+    width: calc(10vw + 12em);
+  }
+}

@@ -6,14 +6,14 @@ import './mainPage.css'
 
 const MainPage = () => {
   return (
-    <>
+    <div className='container'>
       <Header></Header>
       <main>
         <AddTaskForm></AddTaskForm>
         <TaskSort></TaskSort>
         <TaskList></TaskList>
       </main>
-    </>
+    </div>
   )
 }
 

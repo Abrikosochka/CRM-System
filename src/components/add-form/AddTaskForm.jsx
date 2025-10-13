@@ -2,10 +2,10 @@ import './addTaskForm.css'
 
 const AddTaskForm = () => {
   return (
-    <div>
-      <input type="text" />
-      <button>Add</button>
-    </div>
+    <form className='task-add'>
+      <input type="text" className='task-add_input' placeholder='Введите задачу...' />
+      <button type='submit' className='task-add_button'>Добавить</button>
+    </form>
   )
 }
 
