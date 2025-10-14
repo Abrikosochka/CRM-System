@@ -1,8 +1,12 @@
 import "./taskList.css"
 import Task from "../task/Task"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
-const TaskList = (props) => {
+const TaskList = () => {
+  useEffect(() => {
+
+  }, [])
+
   const [tasks, setTasks] = useState([
     { id: 0, text: 'Задача 1', status: true },
     { id: 1, text: 'Задача 2', status: true },
@@ -11,8 +15,9 @@ const TaskList = (props) => {
   ])
   return (
     <div className="tasks-list">
+      {tasks.length === 0 && 'Создайте новую задачу)'}
       {tasks.map((value) =>
-        <Task key={value.id} text={value.text} status={value.status} />
+        <Task key={value.id} id={value.id} text={value.text} status={value.status} onChangeTask={setTasks} />
       )}
     </div>
   )

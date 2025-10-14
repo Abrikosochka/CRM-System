@@ -12,6 +12,17 @@ p {
   font-size: 0.9em;
 }
 
+.task_change-input {
+  padding: 0.5em;
+  width: 15em;
+  font-size: 0.7em;
+  width: calc(10vw + 4em);
+  border: 1px solid royalblue;
+  border-radius: 0.3em;
+  padding: 0.5em;
+  font-size: 0.7em;
+}
+
 .task-header {
   display: flex;
   gap: 0.5em;
@@ -19,7 +30,7 @@ p {
   align-items: center;
 }
 
-.task-header input:hover {
+.task-header .task_check:hover {
   cursor: pointer;
 }
 
@@ -42,5 +53,14 @@ p {
 @media (max-width: 768px) {
   .task {
     width: calc(10vw + 12em);
+  }
+
+  .task {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .task_change-input {
+    width: 100%;
   }
 }
