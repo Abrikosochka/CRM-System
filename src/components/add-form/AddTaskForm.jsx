@@ -3,13 +3,17 @@ import { addTask } from '../../api/tasks-api'
 import './addTaskForm.css'
 
 const AddTaskForm = (props) => {
-  const [value, setValue] = useState({ isDone: true, title: '' })
+  const [value, setValue] = useState({ isDone: false, title: '' })
 
   const handlerCreate = async (e) => {
     e.preventDefault()
     try {
-      await addTask(value)
-      setValue({ isDone: true, title: '' });
+      const response = await addTask(value);
+      console.log(response);
+      if (response.ok) {
+        const data = await response.json();
+        props.onSetTasks(prev => [...prev, data])
+      }
     } catch (e) {
       props.onUpdateError({ open: true, text: e.message })
     }

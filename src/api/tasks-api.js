@@ -5,11 +5,69 @@ export const addTask = async (value) => {
         'https://easydev.club/api/v1/todos',
         {
           method: 'POST',
-          mode: "cors",
           body: JSON.stringify(value),
         }
       );
-      console.log('ok', response)
+      return response;
+    }
+    else if (value.title === "") {
+      throw new Error('Задаче нужно название')
+    }
+    else if (value.title.length < 2) {
+      throw new Error('Слишком короткое название')
+    }
+    else {
+      throw new Error('Слишком длинное название')
+    }
+  } catch (e) {
+    throw new Error(e.message)
+  }
+}
+
+export const getTasks = async (value = 'all') => {
+  try {
+    const response = await fetch(
+      `https://easydev.club/api/v1/todos?filter=${value}`,
+      {
+        method: 'GET'
+      }
+    );
+    if (response.ok) {
+      let json = await response.json();
+      return json;
+    } else {
+      alert("Ошибка HTTP: " + response.status);
+    }
+  } catch (e) {
+    throw new Error(e.message)
+  }
+}
+
+export const deleteTask = async (id) => {
+  try {
+    const response = await fetch(
+      `https://easydev.club/api/v1/todos/${id}`,
+      {
+        method: 'DELETE'
+      }
+    )
+    return response;
+  } catch (e) {
+    throw new Error(e.message)
+  }
+}
+
+export const editTask = async (id, value) => {
+  try {
+    if (value.title.length >= 2 && value.title.length <= 64) {
+      const response = await fetch(
+        `https://easydev.club/api/v1/todos/${id}`,
+        {
+          method: 'PUT',
+          body: JSON.stringify(value),
+        }
+      );
+      return response;
     }
     else if (value.title === "") {
       throw new Error('Задаче нужно название')

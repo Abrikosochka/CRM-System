@@ -10,6 +10,7 @@
 
 p {
   font-size: 0.9em;
+  word-break: break-all;
 }
 
 .task_change-input {
@@ -28,6 +29,8 @@ p {
   gap: 0.5em;
   display: flex;
   align-items: center;
+  max-width: 50%;
+  overflow: hidden;
 }
 
 .task-header .task_check:hover {

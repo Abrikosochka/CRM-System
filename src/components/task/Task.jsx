@@ -1,5 +1,6 @@
 import { useState } from "react"
 import "./task.css"
+import { deleteTask, editTask } from "../../api/tasks-api";
 
 const Task = (props) => {
 
@@ -24,25 +25,36 @@ const Task = (props) => {
     setUpdate(prev => !prev)
   }
 
-  const handleClickUpdate = () => {
-    setUpdate(prev => !prev)
-    setName(updateName);
+  const handleClickUpdate = async () => {
+    try {
+      const response = await editTask(props.id, { isDone: check, title: updateName });
+      setUpdate(prev => !prev)
+      if (response.ok) {
+        setName(updateName);
+      }
+    }
+    catch (e) {
+      props.onUpdateError({ open: true, text: e.message });
+    }
   }
 
   const handleClickNotUpdate = () => {
-    setUpdate(prev => !prev)
+    setUpdate(prev => !prev);
     setUpdateName(name);
   }
 
 
-  const handleClickDelete = () => {
-    props.onChangeTask(prev => prev.filter(
-      (value) => {
-        if (value.id !== props.id) {
-          return value;
+  const handleClickDelete = async () => {
+    const response = await deleteTask(props.id);
+    if (response.ok) {
+      props.onChangeTask(prev => prev.filter(
+        (value) => {
+          if (value.id !== props.id) {
+            return value;
+          }
         }
-      }
-    ))
+      ))
+    }
   }
 
   return (
