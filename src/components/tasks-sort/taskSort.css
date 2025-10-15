@@ -3,3 +3,13 @@
   flex-direction: row;
   gap: 20px;
 }
+
+.task-sort_button-unactive {
+  background-color: white;
+  color: black;
+}
+
+.task-sort button:hover {
+  background-color: royalblue;
+  color: white;
+}

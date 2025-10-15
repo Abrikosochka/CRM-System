@@ -9,16 +9,26 @@ const Task = (props) => {
   const [update, setUpdate] = useState(false);
   const [updateName, setUpdateName] = useState(name)
 
-  const handleClickDone = () => {
-    setCheck(!check)
-    props.onChangeTask(prev => prev.map(
-      (value) => {
-        if (value.id === props.id) {
-          return { id: props.id, text: props.text, status: check };
+  const handleClickDone = async () => {
+    const response = await editTask(props.id, { isDone: !check, title: updateName });
+    if (response.ok) {
+      setCheck(!check)
+      props.onChangeTask(prev => prev.map(
+        (value) => {
+          if (value.id === props.id) {
+            return { ...value, isDone: !check };
+          }
+          return value;
         }
-        return value;
-      }
-    ))
+      ))
+      props.onSetCount(
+        prev => (!check ?
+          { ...prev, inWork: prev.inWork--, completed: prev.completed++ }
+          :
+          { ...prev, completed: prev.completed--, inWork: prev.inWork++ }
+        )
+      )
+    }
   }
 
   const handleClickSetUpdate = () => {
@@ -54,6 +64,13 @@ const Task = (props) => {
           }
         }
       ))
+      props.onSetCount(
+        prev => (!check ?
+          { ...prev, inWork: prev.inWork--, all: prev.all-- }
+          :
+          { ...prev, completed: prev.completed--, all: prev.all-- }
+        )
+      )
     }
   }
 

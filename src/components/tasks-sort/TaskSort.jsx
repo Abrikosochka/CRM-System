@@ -1,11 +1,17 @@
 import "./taskSort.css"
 
-const TaskSort = () => {
+const TaskSort = (props) => {
   return (
     <div className="task-sort">
-      <button className="task-sort_button">Все</button>
-      <button className="task-sort_button">В работе</button>
-      <button className="task-sort_button">Закончены</button>
+      <button className={`task-sort_button ${props.filter !== 'all' ? 'task-sort_button-unactive' : ''}`}
+        onClick={() => props.onSetFilter('all')}>
+        Все {`${props.count.all}`}</button>
+      <button className={`task-sort_button ${props.filter !== 'inWork' ? 'task-sort_button-unactive' : ''}`}
+        onClick={() => props.onSetFilter('inWork')}>
+        В работе {`${props.count.inWork}`}</button>
+      <button className={`task-sort_button ${props.filter !== 'completed' ? 'task-sort_button-unactive' : ''}`}
+        onClick={() => props.onSetFilter('completed')}>
+        Закончены {`${props.count.completed}`}</button>
     </div>
   )
 }
