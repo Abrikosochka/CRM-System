@@ -13,9 +13,10 @@ const MainPage = () => {
   const [tasks, setTasks] = useState(null)
   const [count, setCount] = useState({ all: 0, completed: 0, inWork: 0 })
   const [filter, setFilter] = useState('all')
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    console.log('Filter changed:', filter);
+    setLoading(true);
     const fetchTasks = async () => {
       try {
         const response = await getTasks(filter);
@@ -23,6 +24,8 @@ const MainPage = () => {
         setCount(response.info);
       } catch (error) {
         console.error('Ошибка загрузки задач:', error);
+      } finally {
+        setLoading(false)
       }
     };
     fetchTasks();
@@ -34,8 +37,8 @@ const MainPage = () => {
       <Header></Header>
       <main>
         <AddTaskForm onSetCount={setCount} onUpdateError={setAddError} onSetTasks={setTasks}></AddTaskForm>
-        {tasks && <TaskSort filter={filter} onSetFilter={setFilter} count={count}></TaskSort>}
-        <TaskList filter={filter} onSetCount={setCount} onUpdateError={setAddError} tasks={tasks} onSetTasks={setTasks}></TaskList>
+        <TaskSort filter={filter} onSetFilter={setFilter} count={count}></TaskSort>
+        <TaskList loading={loading} filter={filter} onSetCount={setCount} onUpdateError={setAddError} tasks={tasks} onSetTasks={setTasks}></TaskList>
       </main>
     </div>
   )
