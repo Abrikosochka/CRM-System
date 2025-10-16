@@ -29,7 +29,7 @@ const TaskList = ({ filter, loading, tasks, onSetTasks, onUpdateError, onSetCoun
         :
         <>
           {filterTasks !== null && filterTasks.length === 0 && (
-            filter === "all" ? 'Создайте новую задачу)' :
+            filter === "all" ? 'Создайте новую задачу!' :
               filter === "inWork" ? 'Так держать, все задачи выполнены!)' :
                 'У вас нет завершенных задач(')
           }

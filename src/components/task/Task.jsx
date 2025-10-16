@@ -8,26 +8,35 @@ const Task = (props) => {
   const [name, setName] = useState(props.text)
   const [update, setUpdate] = useState(false);
   const [updateName, setUpdateName] = useState(name)
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClickDone = async () => {
-    const response = await editTask(props.id, { isDone: !check, title: updateName });
-    if (response.ok) {
-      setCheck(!check)
-      props.onChangeTask(prev => prev.map(
-        (value) => {
-          if (value.id === props.id) {
-            return { ...value, isDone: !check };
+    if (isLoading) return
+    setIsLoading(true)
+    try {
+      const response = await editTask(props.id, { isDone: !check, title: updateName });
+      if (response.ok) {
+        setCheck(!check)
+        props.onChangeTask(prev => prev.map(
+          (value) => {
+            if (value.id === props.id) {
+              return { ...value, isDone: !check };
+            }
+            return value;
           }
-          return value;
-        }
-      ))
-      props.onSetCount(
-        prev => (!check ?
-          { ...prev, inWork: prev.inWork--, completed: prev.completed++ }
-          :
-          { ...prev, completed: prev.completed--, inWork: prev.inWork++ }
+        ))
+        props.onSetCount(
+          prev => (!check ?
+            { ...prev, inWork: prev.inWork - 1, completed: prev.completed + 1 }
+            :
+            { ...prev, completed: prev.completed - 1, inWork: prev.inWork + 1 }
+          )
         )
-      )
+      }
+    } catch (e) {
+      props.onUpdateError({ open: true, text: e.message })
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -37,10 +46,11 @@ const Task = (props) => {
 
   const handleClickUpdate = async () => {
     try {
-      const response = await editTask(props.id, { isDone: check, title: updateName });
+      const response = await editTask(props.id, { isDone: check, title: updateName.trim() });
       setUpdate(prev => !prev)
       if (response.ok) {
-        setName(updateName);
+        setName(updateName.trim());
+        setUpdateName(updateName.trim())
       }
     }
     catch (e) {
@@ -60,15 +70,18 @@ const Task = (props) => {
       props.onChangeTask(prev => prev.filter(
         (value) => {
           if (value.id !== props.id) {
-            return value;
+            return true;
+          }
+          else {
+            return false
           }
         }
       ))
       props.onSetCount(
         prev => (!check ?
-          { ...prev, inWork: prev.inWork--, all: prev.all-- }
+          { ...prev, inWork: prev.inWork - 1, all: prev.all - 1 }
           :
-          { ...prev, completed: prev.completed--, all: prev.all-- }
+          { ...prev, completed: prev.completed - 1, all: prev.all - 1 }
         )
       )
     }
@@ -77,15 +90,21 @@ const Task = (props) => {
   return (
     <div className="task">
       <div className="task-header">
-        {!update && <input type="checkbox" name="complete" className="task_check"
-          checked={check} onChange={handleClickDone}
-        />}
-        {update ?
-          <input className="task_change-input" type='text' value={updateName} onChange={
-            (e) => setUpdateName(e.target.value)}>
-          </input>
-          :
-          <p style={{ textDecoration: check ? 'line-through' : 'none' }}>{name}</p>
+        {
+          !isLoading ?
+            <>
+              {!update && <input type="checkbox" name="complete" className="task_check"
+                checked={check} onChange={handleClickDone}
+              />}
+              {update ?
+                <input className="task_change-input" type='text' value={updateName} onChange={
+                  (e) => setUpdateName(e.target.value)}>
+                </input>
+                :
+                <p style={{ textDecoration: check ? 'line-through' : 'none' }}>{name}</p>
+              }
+            </> :
+            'Loading ...'
         }
       </div>
       <div className="task-buttons">

@@ -14,10 +14,10 @@ export const addTask = async (value) => {
       throw new Error('Задаче нужно название')
     }
     else if (value.title.length < 2) {
-      throw new Error('Слишком короткое название')
+      throw new Error('Минимальная длина текста 2 символа')
     }
     else {
-      throw new Error('Слишком длинное название')
+      throw new Error('Максимальная длина текста 64 символа')
     }
   } catch (e) {
     throw new Error(e.message)
@@ -73,10 +73,10 @@ export const editTask = async (id, value) => {
       throw new Error('Задаче нужно название')
     }
     else if (value.title.length < 2) {
-      throw new Error('Слишком короткое название')
+      throw new Error('Минимальная длина текста 2 символа')
     }
     else {
-      throw new Error('Слишком длинное название')
+      throw new Error('Максимальная длина текста 64 символа')
     }
   } catch (e) {
     throw new Error(e.message)

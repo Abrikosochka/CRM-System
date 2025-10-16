@@ -25,6 +25,7 @@ p {
 }
 
 .task-header {
+  text-align: start;
   display: flex;
   gap: 0.5em;
   display: flex;
@@ -65,5 +66,9 @@ p {
 
   .task_change-input {
     width: 100%;
+  }
+
+  .task-header {
+    max-width: 90%;
   }
 }
