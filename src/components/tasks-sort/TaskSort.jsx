@@ -11,7 +11,7 @@ const TaskSort = (props) => {
         В работе {`${props.count.inWork}`}</button>
       <button className={`task-sort_button ${props.filter !== 'completed' ? 'task-sort_button-unactive' : ''}`}
         onClick={() => props.onSetFilter('completed')}>
-        Закончены {`${props.count.completed}`}</button>
+        Завершенные {`${props.count.completed}`}</button>
     </div>
   )
 }
