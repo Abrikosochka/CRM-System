@@ -1,24 +1,28 @@
 import { useRef, useState } from 'react'
 import { addTask } from '../../api/tasks-api'
 import './addTaskForm.css'
+import React from 'react'
 
-const AddTaskForm = (props) => {
+interface AddProps {
+  onUpdateError: (text: string) => void,
+  onTaskFlag: () => void
+}
+
+const AddTaskForm: React.FC<AddProps> = (props) => {
   const [value, setValue] = useState({ isDone: false, title: '' })
-  const formRef = useRef();
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const handlerCreate = async (e) => {
+  const handlerCreate = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault()
     try {
-      const response = await addTask(value);
-      if (response.ok) {
-        formRef.current.reset();
-        setValue({ isDone: true, title: '' })
-        const data = await response.json();
-        props.onSetTasks(prev => [...prev, data])
-        props.onSetCount(prev => ({ ...prev, all: prev.all + 1, inWork: prev.inWork + 1 }))
+      await addTask(value);
+      props.onTaskFlag();
+      formRef.current?.reset();
+      setValue({ isDone: true, title: '' })
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        props.onUpdateError(error.message)
       }
-    } catch (e) {
-      props.onUpdateError({ open: true, text: e.message })
     }
   }
 

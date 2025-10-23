@@ -1,6 +1,16 @@
 import "./taskSort.css"
 
-const TaskSort = (props) => {
+interface sortProps {
+  filter: string,
+  onSetFilter: (value: string) => void,
+  count: {
+    all: number,
+    completed: number,
+    inWork: number
+  }
+}
+
+const TaskSort: React.FC<sortProps> = (props) => {
   return (
     <div className="task-sort">
       <button className={`task-sort_button ${props.filter !== 'all' ? 'task-sort_button-unactive' : ''}`}

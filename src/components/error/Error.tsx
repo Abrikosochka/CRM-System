@@ -1,7 +1,13 @@
 import './error.css'
-const Error = (props) => {
+
+interface errorProps {
+  text: string,
+  onUpdateError: () => void
+}
+
+const Error = (props: errorProps) => {
   const handleClick = () => {
-    props.onUpdateError(prev => prev.open = false)
+    props.onUpdateError();
   }
 
   return (

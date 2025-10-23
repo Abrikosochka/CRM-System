@@ -9,11 +9,12 @@ import { getTasks } from '../api/tasks-api'
 
 const MainPage = () => {
 
-  const [errorAdd, setAddError] = useState({ open: false, text: "JFJDKFjdfjk" })
+  const [errorAdd, setAddError] = useState<{ open: boolean, text: string }>({ open: false, text: "JFJDKFjdfjk" })
   const [tasks, setTasks] = useState(null)
   const [count, setCount] = useState({ all: 0, completed: 0, inWork: 0 })
   const [filter, setFilter] = useState('all')
   const [loading, setLoading] = useState(true)
+  const [getTasksFlag, setGetTasksFlag] = useState(false)
 
   useEffect(() => {
     setLoading(true);
@@ -26,19 +27,29 @@ const MainPage = () => {
         console.error('Ошибка загрузки задач:', error);
       } finally {
         setLoading(false)
+        setGetTasksFlag(false)
       }
     };
     fetchTasks();
-  }, [filter]);
+  }, [filter, getTasksFlag]);
 
   return (
     <div className='container'>
-      {errorAdd.open && <Error text={errorAdd.text} onUpdateError={setAddError}></Error>}
+      {errorAdd.open && <Error text={errorAdd.text} onUpdateError={() => setAddError(prev => ({ ...prev, open: false }))}></Error>}
       <Header></Header>
       <main>
-        <AddTaskForm onSetCount={setCount} onUpdateError={setAddError} onSetTasks={setTasks}></AddTaskForm>
-        <TaskSort filter={filter} onSetFilter={setFilter} count={count}></TaskSort>
-        <TaskList loading={loading} filter={filter} onSetCount={setCount} onUpdateError={setAddError} tasks={tasks} onSetTasks={setTasks}></TaskList>
+        <AddTaskForm
+          onUpdateError={(text: string) => setAddError({ open: true, text: text })}
+          onTaskFlag={() => setGetTasksFlag(true)}
+        ></AddTaskForm>
+        <TaskSort filter={filter} onSetFilter={(value: string) => setFilter(value)} count={count}></TaskSort>
+        <TaskList
+          loading={loading}
+          filter={filter}
+          onUpdateError={() => setAddError(prev => ({ ...prev, open: true }))}
+          tasks={tasks}
+          getFlagTasks={() => setGetTasksFlag(true)}
+        ></TaskList>
       </main>
     </div>
   )
