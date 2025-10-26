@@ -1,42 +1,16 @@
 import "./taskList.css"
 import Task from "../task/Task"
-import { useEffect, useState } from "react"
+import type { TodoStatus, Todo } from "../../types/todo.types";
 
-type task = Array<{
-  created: string,
-  id: bigint,
-  isDone: boolean,
-  title: string
-}> | null
-
-interface TasksProps {
+interface Props {
   loading: boolean,
-  filter: string,
-  onUpdateError: () => void,
-  tasks: task,
-  getFlagTasks: () => void,
+  filter: TodoStatus,
+  todos: Array<Todo> | null,
+  onOpenModalError: (textError: string) => void,
+  startLoadingTasks: () => void
 }
 
-const TaskList: React.FC<TasksProps> = (props) => {
-
-
-  const [filterTasks, setFilteredTasks] = useState<task | null>(null);
-
-  useEffect(() => {
-    setFilteredTasks(props.tasks ? props.tasks.filter(
-      (value) => {
-        if (props.filter === 'all') {
-          return true
-        } else if (props.filter === 'inWork' && value.isDone === false) {
-          return true
-        } else if (props.filter === 'completed' && value.isDone === true) {
-          return true
-        } else {
-          return false
-        }
-      }
-    ) : null)
-  }, [props.tasks, props.filter])
+const TaskList: React.FC<Props> = (props) => {
 
   return (
     <div className="tasks-list">
@@ -44,19 +18,19 @@ const TaskList: React.FC<TasksProps> = (props) => {
         'Loading ...'
         :
         <>
-          {filterTasks !== null && filterTasks.length === 0 && (
+          {props.todos !== null && props.todos.length === 0 && (
             props.filter === "all" ? 'Создайте новую задачу!' :
               props.filter === "inWork" ? 'Так держать, все задачи выполнены!)' :
-                'У вас нет завершенных задач(')
+                'Нет завершенных задач(')
           }
-          {filterTasks !== null && filterTasks.map((value) =>
+          {props.todos !== null && props.todos.map((todo) =>
             <Task
-              onUpdateError={props.onUpdateError}
-              key={value.id}
-              id={value.id}
-              text={value.title}
-              status={value.isDone}
-              onChangeFlagGetTasks={props.getFlagTasks} />
+              onOpenModalError={props.onOpenModalError}
+              key={todo.id}
+              todoId={todo.id}
+              todoText={todo.title}
+              todoStatus={todo.isDone}
+              startLoadingTasks={props.startLoadingTasks} />
           )}
         </>
       }

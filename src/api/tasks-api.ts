@@ -1,41 +1,22 @@
-interface addTaskResponse {
-  created: string,
-  id: bigint,
-  isDone: boolean,
-  title: string
-}
+import type { TodoStatus, TodoInfo, Todo, TodoRequest } from "../types/todo.types";
+import type { MetaResponse } from "../types/todo.api";
 
-export const addTask = async (value: { isDone: boolean, title: string }): Promise<addTaskResponse> => {
-  if (value.title.length >= 2 && value.title.length <= 64) {
-    const response = await fetch(
-      `${import.meta.env.VITE_APP_BACKEND}todos`,
-      {
-        method: 'POST',
-        body: JSON.stringify(value),
-      }
-    );
-    if (response.ok) {
-      const result = await response.json();
-      return result;
-    }
-    else {
-      throw new Error('Ошибка при добавлении задачи' + response.status)
-    }
-  }
-  else if (value.title === "") {
-    throw new Error('Задаче нужно название')
-  }
-  else if (value.title.length < 2) {
-    throw new Error('Минимальная длина текста 2 символа')
-  }
-  else {
-    throw new Error('Максимальная длина текста 64 символа')
-  }
-}
-
-export const getTasks = async (value = 'all') => {
+export const addTodo = async (todo: TodoRequest): Promise<void> => {
   const response = await fetch(
-    `${import.meta.env.VITE_APP_BACKEND}todos?filter=${value}`,
+    `${import.meta.env.VITE_APP_BACKEND}todos`,
+    {
+      method: 'POST',
+      body: JSON.stringify(todo),
+    }
+  );
+  if (!response.ok) {
+    throw new Error("Ошибка HTTP: " + response.status)
+  }
+}
+
+export const getTodos = async (todoInfo: TodoStatus = 'all'): Promise<MetaResponse<Todo, TodoInfo>> => {
+  const response = await fetch(
+    `${import.meta.env.VITE_APP_BACKEND}todos?filter=${todoInfo}`,
     {
       method: 'GET'
     }
@@ -48,34 +29,27 @@ export const getTasks = async (value = 'all') => {
   }
 }
 
-export const deleteTask = async (id: bigint) => {
+export const deleteTodo = async (todoId: Todo["id"]): Promise<void> => {
   const response = await fetch(
-    `${import.meta.env.VITE_APP_BACKEND}todos/${id}`,
+    `${import.meta.env.VITE_APP_BACKEND}todos/${todoId}`,
     {
       method: 'DELETE'
     }
   )
-  return response;
+  if (!response.ok) {
+    throw new Error("Ошибка HTTP: " + response.status)
+  }
 }
 
-export const editTask = async (id: bigint, value: { isDone: boolean, title: string }) => {
-  if (value.title.length >= 2 && value.title.length <= 64) {
-    const response = await fetch(
-      `${import.meta.env.VITE_APP_BACKEND}todos/${id}`,
-      {
-        method: 'PUT',
-        body: JSON.stringify(value),
-      }
-    );
-    return response;
-  }
-  else if (value.title === "") {
-    throw new Error('Задаче нужно название')
-  }
-  else if (value.title.length < 2) {
-    throw new Error('Минимальная длина текста 2 символа')
-  }
-  else {
-    throw new Error('Максимальная длина текста 64 символа')
+export const editTodo = async (id: Todo["id"], todoData: TodoRequest): Promise<void> => {
+  const response = await fetch(
+    `${import.meta.env.VITE_APP_BACKEND}todos/${id}`,
+    {
+      method: 'PUT',
+      body: JSON.stringify(todoData),
+    }
+  );
+  if (!response.ok) {
+    throw new Error("Ошибка HTTP: " + response.status)
   }
 }

@@ -1,20 +1,21 @@
+import type React from 'react';
 import './error.css'
 
-interface errorProps {
-  text: string,
-  onUpdateError: () => void
+interface Props {
+  textError: string,
+  onCloseModal: () => void
 }
 
-const Error = (props: errorProps) => {
-  const handleClick = () => {
-    props.onUpdateError();
+const Error: React.FC<Props> = (props) => {
+  const handleClick = (): void => {
+    props.onCloseModal();
   }
 
   return (
     <div className='error' onClick={handleClick}>
       <div>
         <p>{
-          props.text
+          props.textError
         }</p>
       </div>
     </div>

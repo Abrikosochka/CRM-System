@@ -1,110 +1,100 @@
 import { useState } from "react"
 import "./task.css"
-import { deleteTask, editTask } from "../../api/tasks-api";
+import { deleteTodo, editTodo } from "../../api/tasks-api";
+import type { Todo } from "../../types/todo.types";
+import { validateTodo } from "../../helpers/validation";
+import { Icon } from "../icon/Icon";
 
-interface taskProps {
-  onUpdateError: () => void,
-  id: bigint,
-  text: string,
-  status: boolean,
-  onChangeFlagGetTasks: () => void
+interface Props {
+  onOpenModalError: (errorText: string) => void,
+  todoId: Todo["id"],
+  todoText: Todo["title"],
+  todoStatus: Todo["isDone"],
+  startLoadingTasks: () => void
 }
 
-const Task: React.FC<taskProps> = (props) => {
+const Task: React.FC<Props> = (props) => {
 
-  const [update, setUpdate] = useState(false);
-  const [updateName, setUpdateName] = useState(props.text)
-  const [isLoading, setIsLoading] = useState(false);
+  const [update, setUpdate] = useState<boolean>(false);
+  const [updateTitle, setUpdateTitle] = useState<string>(props.todoText)
 
-  const handleClickDone = async () => {
-    if (isLoading) return
-    setIsLoading(true)
+  const handleClickUpdateTodoStatus = async (e: React.FormEvent): Promise<void> => {
+    e.preventDefault();
     try {
-      const response = await editTask(props.id, { isDone: !props.status, title: updateName });
-      if (response.ok) {
-        props.onChangeFlagGetTasks();
-      }
+      await editTodo(props.todoId, { isDone: !props.todoStatus, title: updateTitle });
+      props.startLoadingTasks();
     } catch (e: unknown) {
-      if (e instanceof Error) props.onUpdateError()
-    } finally {
-      setIsLoading(false);
+      if (e instanceof Error) props.onOpenModalError(e.message)
     }
   }
 
-  const handleClickSetUpdate = () => {
-    setUpdate(prev => !prev)
+  const handleOpenUpdateTodo = (): void => {
+    setUpdate(true)
   }
 
-  const handleClickUpdate = async () => {
+  const handleClickUpdateTodoTitle = async (e: React.FormEvent): Promise<void> => {
+    e.preventDefault()
     try {
-      const response = await editTask(props.id, { isDone: props.status, title: updateName.trim() });
-      if (response.ok) {
-        props.onChangeFlagGetTasks();
-      }
-    }
-    catch (e: unknown) {
-      if (e instanceof Error) {
-        props.onUpdateError();
-      }
-    }
-  }
-
-  const handleClickNotUpdate = () => {
-    setUpdate(prev => !prev);
-    setUpdateName(props.text);
-  }
-
-
-  const handleClickDelete = async () => {
-    try {
-
-      const response = await deleteTask(props.id);
-      if (response.ok) {
-        props.onChangeFlagGetTasks();
-      }
+      validateTodo(updateTitle);
+      await editTodo(props.todoId, { isDone: props.todoStatus, title: updateTitle.trim() });
+      props.startLoadingTasks();
     } catch (e: unknown) {
-      if (e instanceof Error) {
-        props.onUpdateError();
-      }
+      if (e instanceof Error) props.onOpenModalError(e.message);
+    }
+  }
+
+  const handleCloseUpdateTodo = (): void => {
+    setUpdate(false);
+    setUpdateTitle(props.todoText);
+  }
+
+
+  const handleClickDeleteTodo = async (e: React.FormEvent): Promise<void> => {
+    e.preventDefault();
+    try {
+      await deleteTodo(props.todoId);
+      props.startLoadingTasks();
+    } catch (e: unknown) {
+      if (e instanceof Error) props.onOpenModalError(e.message);
     }
   }
 
   return (
-    <div className="task">
+    <form className="task">
       <div className="task-header">
         <>
           {!update && <input type="checkbox" name="complete" className="task_check"
-            checked={props.status} onChange={handleClickDone}
+            checked={props.todoStatus} onChange={handleClickUpdateTodoStatus}
           />}
           {update ?
-            <input className="task_change-input" type='text' value={updateName} onChange={
-              (e) => setUpdateName(e.target.value)}>
+            <input className="task_change-input" type='text' value={updateTitle}
+              onChange={(e) => setUpdateTitle(e.target.value)}>
             </input>
             :
-            <p style={{ textDecoration: props.status ? 'line-through' : 'none' }}>{props.text}</p>
+            <p className={`${props.todoStatus ? 'task-header-is-done' : ''}`}>{props.todoText}</p>
           }
         </>
       </div>
       <div className="task-buttons">
         {!update ?
           <button className="task-buttons_button edit"
-            onClick={handleClickSetUpdate}
-          >Редактировать</button> :
+            onClick={handleOpenUpdateTodo}
+          ><Icon icon="Edit" ></Icon></button> :
           <>
+            <button type="submit" className="task-buttons_button edit"
+              onClick={handleClickUpdateTodoTitle}
+            ><Icon icon="Save" ></Icon></button>
             <button className="task-buttons_button edit"
-              onClick={handleClickUpdate}
-            >Сохранить</button>
-            <button className="task-buttons_button edit"
-              onClick={handleClickNotUpdate}
-            >Отмена</button>
+              onClick={handleCloseUpdateTodo}
+            ><Icon icon="Close" ></Icon></button>
           </>
         }
 
-        <button className="task-buttons_button delete"
-          onClick={handleClickDelete}
-        >Удалить</button>
+        <button type="submit" className="task-buttons_button delete"
+          onClick={handleClickDeleteTodo}
+        ><Icon icon="Delete" ></Icon></button>
       </div>
-    </div>
+    </form>
   )
 }
 

@@ -1,27 +1,24 @@
+import type { TodoInfo, TodoStatus } from "../../types/todo.types"
 import "./taskSort.css"
 
-interface sortProps {
-  filter: string,
-  onSetFilter: (value: string) => void,
-  count: {
-    all: number,
-    completed: number,
-    inWork: number
-  }
+interface Props {
+  filter: TodoStatus,
+  onSetFilter: (todoFilter: TodoStatus) => void,
+  todosCount: TodoInfo
 }
 
-const TaskSort: React.FC<sortProps> = (props) => {
+const TaskSort: React.FC<Props> = (props) => {
   return (
     <div className="task-sort">
-      <button className={`task-sort_button ${props.filter !== 'all' ? 'task-sort_button-unactive' : ''}`}
+      <button className={`task-sort_button ${props.filter === 'all' ? 'task-sort_button-active' : ''}`}
         onClick={() => props.onSetFilter('all')}>
-        Все {`${props.count.all}`}</button>
-      <button className={`task-sort_button ${props.filter !== 'inWork' ? 'task-sort_button-unactive' : ''}`}
+        Все {`${props.todosCount.all}`}</button>
+      <button className={`task-sort_button ${props.filter === 'inWork' ? 'task-sort_button-active' : ''}`}
         onClick={() => props.onSetFilter('inWork')}>
-        В работе {`${props.count.inWork}`}</button>
-      <button className={`task-sort_button ${props.filter !== 'completed' ? 'task-sort_button-unactive' : ''}`}
+        В работе {`${props.todosCount.inWork}`}</button>
+      <button className={`task-sort_button ${props.filter === 'completed' ? 'task-sort_button-active' : ''}`}
         onClick={() => props.onSetFilter('completed')}>
-        Завершенные {`${props.count.completed}`}</button>
+        Завершенные {`${props.todosCount.completed}`}</button>
     </div>
   )
 }

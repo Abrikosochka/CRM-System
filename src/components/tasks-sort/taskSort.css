@@ -4,9 +4,14 @@
   gap: 20px;
 }
 
-.task-sort_button-unactive {
+.task-sort_button {
   background-color: white;
   color: black;
+}
+
+.task-sort_button-active {
+  background-color: royalblue;
+  color: white;
 }
 
 .task-sort button:hover {

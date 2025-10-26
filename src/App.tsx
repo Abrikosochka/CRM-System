@@ -1,10 +1,9 @@
-import './App.css'
-import MainPage from './pages/MainPage'
+import TodoPage from './pages/TodoPage'
 
 function App() {
   return (
     <>
-      <MainPage></MainPage>
+      <TodoPage></TodoPage>
     </>
   )
 }

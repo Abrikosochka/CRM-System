@@ -34,6 +34,10 @@ p {
   overflow: hidden;
 }
 
+.task-header-is-done {
+  text-decoration: line-through;
+}
+
 .task-header .task_check:hover {
   cursor: pointer;
 }
@@ -71,4 +75,6 @@ p {
   .task-header {
     max-width: 90%;
   }
+
+
 }
