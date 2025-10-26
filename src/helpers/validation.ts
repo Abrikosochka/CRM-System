@@ -1,11 +1,14 @@
-export const validateTodo = (todoText: string): void => {
-  if (!todoText) {
+export const validateTodo = (todoText: string): string => {
+  const title: string = todoText.trim();
+  console.log(title)
+  if (!title) {
     throw new Error('Задаче нужно название');
   }
-  if (todoText.length < 2) {
+  if (title.length < 2) {
     throw new Error('Минимальная длина текста 2 символа');
   }
-  if (todoText.length > 64) {
+  if (title.length > 64) {
     throw new Error('Максимальная длина текста 64 символа');
   }
+  return title
 }

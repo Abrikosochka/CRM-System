@@ -21,8 +21,8 @@ const AddTaskForm: React.FC<Props> = (props) => {
   const handleCreateTodo = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     try {
-      validateTodo(inputText.title!);
-      await addTodo(inputText);
+      const title: string = validateTodo(inputText.title!);
+      await addTodo({ ...inputText, title: title });
       setInputText(INITIAL_TODO_INPUT)
     } catch (error: unknown) {
       if (error instanceof Error) props.onOpenModalError(error.message)
@@ -38,7 +38,7 @@ const AddTaskForm: React.FC<Props> = (props) => {
         placeholder='Введите задачу...'
         value={inputText.title}
         onChange={
-          (e: React.ChangeEvent<HTMLInputElement>): void => setInputText({ isDone: false, title: e.target.value.trim() })
+          (e: React.ChangeEvent<HTMLInputElement>): void => setInputText({ isDone: false, title: e.target.value })
         } />
       <button type='submit' className='task-add_button'>Добавить</button>
     </form>
