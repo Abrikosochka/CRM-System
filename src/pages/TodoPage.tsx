@@ -14,7 +14,7 @@ const INITIAL_TODO_INFO = {
   inWork: 0
 };
 
-const MainPage: React.FC = () => {
+const TodosPage: React.FC = () => {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalText, setModalText] = useState<ErrorMessage>({ message: '' });
@@ -76,4 +76,4 @@ const MainPage: React.FC = () => {
   )
 }
 
-export default MainPage
+export default TodosPage

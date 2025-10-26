@@ -1,9 +1,9 @@
-import TodoPage from './pages/TodoPage'
+import TodosPage from './pages/TodoPage'
 
 function App() {
   return (
     <>
-      <TodoPage></TodoPage>
+      <TodosPage></TodosPage>
     </>
   )
 }
