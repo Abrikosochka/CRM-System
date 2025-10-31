@@ -1,7 +1,7 @@
 import type { TodoStatus, TodoInfo, Todo, TodoRequest } from "../types/todo.types";
 import type { MetaResponse } from "../types/todo.api";
 
-export const addTodo = async (todo: TodoRequest): Promise<void> => {
+export const addTodo = async (todo: TodoRequest): Promise<Todo> => {
   const response = await fetch(
     `${import.meta.env.VITE_APP_BACKEND}todos`,
     {
@@ -9,7 +9,11 @@ export const addTodo = async (todo: TodoRequest): Promise<void> => {
       body: JSON.stringify(todo),
     }
   );
-  if (!response.ok) {
+  if (response.ok) {
+    const result = await response.json();
+    console.log(response)
+    return result;
+  } else {
     throw new Error("Ошибка HTTP: " + response.status)
   }
 }
@@ -49,7 +53,10 @@ export const editTodo = async (id: Todo["id"], todoData: TodoRequest): Promise<v
       body: JSON.stringify(todoData),
     }
   );
-  if (!response.ok) {
+  if (response.ok) {
+    const result = await response.json();
+    return result;
+  } else {
     throw new Error("Ошибка HTTP: " + response.status)
   }
 }

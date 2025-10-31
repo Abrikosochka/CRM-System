@@ -7,23 +7,21 @@ import { Icon } from "../icon/Icon";
 
 interface Props {
   onOpenModalError: (errorText: string) => void,
-  todoId: Todo["id"],
-  todoText: Todo["title"],
-  todoStatus: Todo["isDone"],
+  todo: Todo,
   startLoadingTasks: () => void
 }
 
 const Task: React.FC<Props> = (props) => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [update, setUpdate] = useState<boolean>(false);
-  const [updateTitle, setUpdateTitle] = useState<string>(props.todoText)
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [inputTitle, setInputTitle] = useState<string>(props.todo.title)
 
   const handleClickUpdateTodoStatus = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault();
     try {
       setIsLoading(true);
-      await editTodo(props.todoId, { isDone: !props.todoStatus, title: updateTitle });
+      await editTodo(props.todo.id, { isDone: !props.todo.isDone, title: inputTitle });
       props.startLoadingTasks();
     } catch (e: unknown) {
       if (e instanceof Error) props.onOpenModalError(e.message)
@@ -33,15 +31,16 @@ const Task: React.FC<Props> = (props) => {
   }
 
   const handleOpenUpdateTodo = (): void => {
-    setUpdate(true)
+    setIsUpdating(true)
   }
 
   const handleClickUpdateTodoTitle = async (e: React.FormEvent): Promise<void> => {
     e.preventDefault()
     try {
       setIsLoading(true);
-      const title: string = validateTodo(updateTitle);
-      await editTodo(props.todoId, { isDone: props.todoStatus, title: title });
+      const title = inputTitle.trim();
+      validateTodo(title);
+      await editTodo(props.todo.id, { isDone: props.todo.isDone, title: title });
       props.startLoadingTasks();
     } catch (e: unknown) {
       if (e instanceof Error) props.onOpenModalError(e.message);
@@ -51,8 +50,8 @@ const Task: React.FC<Props> = (props) => {
   }
 
   const handleCloseUpdateTodo = (): void => {
-    setUpdate(false);
-    setUpdateTitle(props.todoText);
+    setIsUpdating(false);
+    setInputTitle(props.todo.title);
   }
 
 
@@ -60,7 +59,7 @@ const Task: React.FC<Props> = (props) => {
     e.preventDefault();
     try {
       setIsLoading(true);
-      await deleteTodo(props.todoId);
+      await deleteTodo(props.todo.id);
       props.startLoadingTasks();
     } catch (e: unknown) {
       if (e instanceof Error) props.onOpenModalError(e.message);
@@ -74,20 +73,20 @@ const Task: React.FC<Props> = (props) => {
       {!isLoading ? <>
         <div className="task-header">
           <>
-            {!update && <input type="checkbox" name="complete" className="task_check"
-              checked={props.todoStatus} onChange={handleClickUpdateTodoStatus}
+            {!isUpdating && <input type="checkbox" name="complete" className="task_check"
+              checked={props.todo.isDone} onChange={handleClickUpdateTodoStatus}
             />}
-            {update ?
-              <input className="task_change-input" type='text' value={updateTitle}
-                onChange={(e) => setUpdateTitle(e.target.value)}>
+            {isUpdating ?
+              <input className="task_change-input" type='text' value={inputTitle}
+                onChange={(e) => setInputTitle(e.target.value)}>
               </input>
               :
-              <p className={`${props.todoStatus ? 'task-header-is-done' : ''}`}>{props.todoText}</p>
+              <p className={`${props.todo.isDone ? 'task-header-is-done' : ''}`}>{props.todo.title}</p>
             }
           </>
         </div>
         <div className="task-buttons">
-          {!update ?
+          {!isUpdating ?
             <button className="task-buttons_button edit"
               onClick={handleOpenUpdateTodo}
             ><Icon icon="Edit" ></Icon></button> :

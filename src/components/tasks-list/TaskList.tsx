@@ -27,9 +27,7 @@ const TaskList: React.FC<Props> = (props) => {
             <Task
               onOpenModalError={props.onOpenModalError}
               key={todo.id}
-              todoId={todo.id}
-              todoText={todo.title}
-              todoStatus={todo.isDone}
+              todo={todo}
               startLoadingTasks={props.startLoadingTasks} />
           )}
         </>
