@@ -1,0 +1,11 @@
+.custom-icon svg {
+  width: 20px;
+  height: 20px;
+  color: white;
+}
+
+.custom-icon path,
+.custom-icon rect,
+.custom-icon g {
+  fill: currentColor;
+}
