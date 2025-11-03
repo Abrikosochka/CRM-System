@@ -3,10 +3,12 @@ import AddTaskForm from '../components/add-form/AddTaskForm'
 import TaskList from '../components/tasks-list/TaskList'
 import TaskSort from '../components/tasks-sort/TaskSort'
 import './todoPage.css'
-import Error from '../components/error/Error'
 import { getTodos } from '../api/tasks-api'
 import type { Todo, TodoInfo, TodoStatus } from '../types/todo.types'
 import type { ErrorMessage } from '../types/error.types'
+import { Layout } from 'antd'
+import { Content, Header } from 'antd/es/layout/layout'
+import { Modal } from 'antd'
 
 const INITIAL_TODO_INFO = {
   all: 0,
@@ -16,12 +18,18 @@ const INITIAL_TODO_INFO = {
 
 const TodosPage: React.FC = () => {
 
-  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalText, setModalText] = useState<ErrorMessage>({ message: '' });
   const [todos, setTodos] = useState<Array<Todo> | null>(null)
   const [todosCount, setTodosCount] = useState<TodoInfo | typeof INITIAL_TODO_INFO>(INITIAL_TODO_INFO)
   const [filter, setFilter] = useState<TodoStatus>('all')
   const [loading, setLoading] = useState<boolean>(true)
+
+  const openModal = (textError: string): void => {
+    Modal.error({
+      title: 'Ошибка',
+      content: textError,
+    });
+  };
 
   const fetchTodos = useCallback(async (): Promise<void> => {
     try {
@@ -42,19 +50,18 @@ const TodosPage: React.FC = () => {
 
   useEffect((): void => {
     if (modalText.message) {
-      setIsModalOpen(true);
+      openModal(modalText.message);
     }
   }, [modalText])
 
   return (
-    <div className='container'>
-      {isModalOpen && <Error textError={modalText.message} onCloseModal={(): void => setIsModalOpen(false)}></Error>}
-      <header>
-        <h1>
+    <Layout className='container'>
+      <Header className='header'>
+        <h2>
           ToDo
-        </h1>
-      </header>
-      <main>
+        </h2>
+      </Header>
+      <Content className='content'>
         <AddTaskForm
           onOpenModalError={(textError: string): void => setModalText({ message: textError })}
           startLoadingTasks={fetchTodos}
@@ -71,8 +78,8 @@ const TodosPage: React.FC = () => {
           startLoadingTasks={fetchTodos}
           todos={todos}
         ></TaskList>
-      </main>
-    </div>
+      </Content>
+    </Layout>
   )
 }
 

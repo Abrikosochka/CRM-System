@@ -1,5 +1,6 @@
 .container {
   font-size: 1.3em;
+  background: none;
 }
 
 header,
@@ -16,5 +17,10 @@ main {
 }
 
 header {
+  color: royalblue;
+}
+
+.header {
+  background: none;
   color: royalblue;
 }
