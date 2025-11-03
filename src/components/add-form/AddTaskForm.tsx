@@ -1,15 +1,10 @@
-import { useState } from 'react'
 import { addTodo } from '../../api/tasks-api'
 import type { TodoRequest } from '../../types/todo.types'
 import { validateTodo } from '../../helpers/validation'
 import './addTaskForm.css'
 import React from 'react'
 import { Button, Form, Input } from 'antd';
-
-const INITIAL_TODO_INPUT = {
-  isDone: false,
-  title: ''
-};
+import type { RuleObject } from 'antd/es/form'
 
 interface Props {
   onOpenModalError: (textError: string) => void,
@@ -17,32 +12,45 @@ interface Props {
 }
 
 const AddTaskForm: React.FC<Props> = (props) => {
-  const [inputText, setInputText] = useState<TodoRequest>(INITIAL_TODO_INPUT)
+  const [form] = Form.useForm<TodoRequest>();
 
   const handleCreateTodo = async (): Promise<void> => {
     try {
-      const title = inputText.title?.trim();
-      validateTodo(title);
-      await addTodo({ ...inputText, title: title });
+      const title: string = form.getFieldValue('title');
+      await addTodo({ title: title, isDone: false });
+      form.resetFields();
       props.startLoadingTasks();
-      setInputText(INITIAL_TODO_INPUT)
     } catch (error: unknown) {
       if (error instanceof Error) props.onOpenModalError(error.message)
     }
   }
 
-  const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    setInputText({ isDone: false, title: e.target.value });
-  }
+
 
   return (
-    <Form className='task-add' onFinish={handleCreateTodo}>
-      <Form.Item label={null}>
+    <Form form={form} className='task-add' onFinish={handleCreateTodo}>
+      <Form.Item
+        name="title"
+        rules={[
+          {
+            validator: (_: RuleObject, value: string): Promise<void> => {
+              try {
+                const title = value?.trim();
+                validateTodo(title);
+                return Promise.resolve();
+              } catch (error) {
+                if (error instanceof Error) {
+                  return Promise.reject(error.message);
+                }
+                return Promise.reject('Ошибка валидации');
+              }
+            },
+          },
+        ]}
+        label={null}>
         <Input
           name="title"
           placeholder='Введите название задачи...'
-          value={inputText.title}
-          onChange={handleChangeInput}
         />
       </Form.Item>
 

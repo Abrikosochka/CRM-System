@@ -51,6 +51,7 @@ const TodosPage: React.FC = () => {
   useEffect((): void => {
     if (modalText.message) {
       openModal(modalText.message);
+      setModalText({ message: '' });
     }
   }, [modalText])
 

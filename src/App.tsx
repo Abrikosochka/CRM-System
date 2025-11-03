@@ -1,9 +1,14 @@
+import { BrowserRouter, Route, Routes } from 'react-router'
 import TodosPage from './pages/TodoPage'
 
 function App() {
   return (
     <>
-      <TodosPage></TodosPage>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/' element={<TodosPage />}></Route>
+        </Routes>
+      </BrowserRouter>
     </>
   )
 }
