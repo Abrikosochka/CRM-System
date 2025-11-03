@@ -4,9 +4,3 @@
   align-items: center;
   gap: 10px;
 }
-
-.task-add_input {
-  padding: 0.5em;
-  width: 15em;
-  font-size: 0.7em;
-}

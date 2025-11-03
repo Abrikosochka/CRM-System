@@ -3,7 +3,8 @@ import "./task.css"
 import { deleteTodo, editTodo } from "../../api/tasks-api";
 import type { Todo } from "../../types/todo.types";
 import { validateTodo } from "../../helpers/validation";
-import { Icon } from "../icon/Icon";
+import { Button, Checkbox, Form, Input, Layout, ConfigProvider } from 'antd';
+import { CloseOutlined, DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
 
 interface Props {
   onOpenModalError: (errorText: string) => void,
@@ -17,8 +18,7 @@ const Task: React.FC<Props> = (props) => {
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [inputTitle, setInputTitle] = useState<string>(props.todo.title)
 
-  const handleClickUpdateTodoStatus = async (e: React.FormEvent): Promise<void> => {
-    e.preventDefault();
+  const handleClickUpdateTodoStatus = async (): Promise<void> => {
     try {
       setIsLoading(true);
       await editTodo(props.todo.id, { isDone: !props.todo.isDone, title: inputTitle });
@@ -69,43 +69,69 @@ const Task: React.FC<Props> = (props) => {
   }
 
   return (
-    <form className="task">
+    <Form className="task">
       {!isLoading ? <>
-        <div className="task-header">
+        <Layout className="task-header">
           <>
-            {!isUpdating && <input type="checkbox" name="complete" className="task_check"
-              checked={props.todo.isDone} onChange={handleClickUpdateTodoStatus}
-            />}
             {isUpdating ?
-              <input className="task_change-input" type='text' value={inputTitle}
+              <Input
+                name="title"
+                placeholder='Введите название задачи...'
+                className="task_change-input"
+                value={inputTitle}
                 onChange={(e) => setInputTitle(e.target.value)}>
-              </input>
+              </Input>
               :
-              <p className={`${props.todo.isDone ? 'task-header-is-done' : ''}`}>{props.todo.title}</p>
+              <Form.Item className="checkbox">
+                <Checkbox
+                  type="checkbox"
+                  name="complete"
+                  checked={props.todo.isDone}
+                  onChange={handleClickUpdateTodoStatus}
+                  className={`${props.todo.isDone ? 'task-header-is-done' : ''}`}
+                >
+                  {props.todo.title}
+                </Checkbox>
+              </Form.Item>
             }
           </>
-        </div>
-        <div className="task-buttons">
-          {!isUpdating ?
-            <button className="task-buttons_button edit"
-              onClick={handleOpenUpdateTodo}
-            ><Icon icon="Edit" ></Icon></button> :
-            <>
-              <button type="submit" className="task-buttons_button edit"
-                onClick={handleClickUpdateTodoTitle}
-              ><Icon icon="Save" ></Icon></button>
-              <button className="task-buttons_button edit"
-                onClick={handleCloseUpdateTodo}
-              ><Icon icon="Close" ></Icon></button>
-            </>
-          }
-
-          <button type="submit" className="task-buttons_button delete"
-            onClick={handleClickDeleteTodo}
-          ><Icon icon="Delete" ></Icon></button>
-        </div>
+        </Layout>
+        <Layout className="task-buttons">
+          <ConfigProvider>
+            {!isUpdating ?
+              <Button
+                onClick={handleOpenUpdateTodo}
+                icon={<EditOutlined />}
+                type="primary"
+              >
+              </Button> :
+              <>
+                <Button
+                  htmlType="submit"
+                  onClick={handleClickUpdateTodoTitle}
+                  icon={<SaveOutlined />}
+                  type="primary"
+                >
+                </Button>
+                <Button
+                  onClick={handleCloseUpdateTodo}
+                  icon={<CloseOutlined />}
+                  type="primary"
+                >
+                </Button>
+              </>
+            }
+            <Button
+              type="primary"
+              htmlType="submit"
+              onClick={handleClickDeleteTodo}
+              icon={<DeleteOutlined />}
+              danger
+            />
+          </ConfigProvider>
+        </Layout>
       </> : 'Loading...'}
-    </form>
+    </Form>
   )
 }
 

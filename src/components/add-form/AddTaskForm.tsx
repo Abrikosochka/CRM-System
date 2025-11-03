@@ -4,6 +4,7 @@ import type { TodoRequest } from '../../types/todo.types'
 import { validateTodo } from '../../helpers/validation'
 import './addTaskForm.css'
 import React from 'react'
+import { Button, Form, Input } from 'antd';
 
 const INITIAL_TODO_INPUT = {
   isDone: false,
@@ -18,8 +19,7 @@ interface Props {
 const AddTaskForm: React.FC<Props> = (props) => {
   const [inputText, setInputText] = useState<TodoRequest>(INITIAL_TODO_INPUT)
 
-  const handleCreateTodo = async (e: React.FormEvent): Promise<void> => {
-    e.preventDefault();
+  const handleCreateTodo = async (): Promise<void> => {
     try {
       const title = inputText.title?.trim();
       validateTodo(title);
@@ -36,14 +36,22 @@ const AddTaskForm: React.FC<Props> = (props) => {
   }
 
   return (
-    <form className='task-add' onSubmit={handleCreateTodo}>
-      <input type="text"
-        className='task-add_input'
-        placeholder='Введите задачу...'
-        value={inputText.title}
-        onChange={handleChangeInput} />
-      <button type='submit' className='task-add_button'>Добавить</button>
-    </form>
+    <Form className='task-add' onFinish={handleCreateTodo}>
+      <Form.Item label={null}>
+        <Input
+          name="title"
+          placeholder='Введите название задачи...'
+          value={inputText.title}
+          onChange={handleChangeInput}
+        />
+      </Form.Item>
+
+      <Form.Item label={null}>
+        <Button type="primary" htmlType="submit">
+          Добавить
+        </Button>
+      </Form.Item>
+    </Form>
   )
 }
 

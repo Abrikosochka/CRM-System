@@ -1,6 +1,7 @@
 import "./taskList.css"
 import Task from "../task/Task"
 import type { TodoStatus, Todo } from "../../types/todo.types";
+import { Layout } from 'antd';
 
 interface Props {
   loading: boolean,
@@ -13,7 +14,7 @@ interface Props {
 const TaskList: React.FC<Props> = (props) => {
 
   return (
-    <div className="tasks-list">
+    <Layout className="tasks-list">
       {props.loading ?
         'Loading ...'
         :
@@ -32,7 +33,7 @@ const TaskList: React.FC<Props> = (props) => {
           )}
         </>
       }
-    </div>
+    </Layout>
   )
 }
 
