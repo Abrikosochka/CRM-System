@@ -19,7 +19,7 @@ function App() {
   const navigate: NavigateFunction = useNavigate()
 
   const [collapsed, setCollapsed] = useState<boolean>(true);
-  const [isOpen, setIsOpen] = useState<boolean>(true);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
   const mobileButton = useRef<HTMLButtonElement>(null);
 
   const openMenu = (): void => {
