@@ -51,7 +51,6 @@ const TodosPage: React.FC = () => {
   useEffect((): () => void => {
     const interval: number = setInterval(async (): Promise<void> => {
       try {
-        console.log('обновляем')
         const response = await getTodos(filter);
         setTodos(response.data);
         setTodosCount(response.info ? response.info : INITIAL_TODO_INFO);
