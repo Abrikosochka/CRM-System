@@ -25,8 +25,6 @@ const AddTaskForm: React.FC<Props> = (props) => {
     }
   }
 
-
-
   return (
     <Form form={form} className='task-add' onFinish={handleCreateTodo}>
       <Form.Item

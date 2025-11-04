@@ -1,26 +1,5 @@
 .container {
   font-size: 1.3em;
   background: none;
-}
-
-header,
-main {
-  margin: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-main {
-  gap: 20px;
-}
-
-header {
-  color: royalblue;
-}
-
-.header {
-  background: none;
-  color: royalblue;
+  overflow: auto;
 }

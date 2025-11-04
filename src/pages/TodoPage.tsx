@@ -7,7 +7,7 @@ import { getTodos } from '../api/tasks-api'
 import type { Todo, TodoInfo, TodoStatus } from '../types/todo.types'
 import type { ErrorMessage } from '../types/error.types'
 import { Layout } from 'antd'
-import { Content, Header } from 'antd/es/layout/layout'
+import { Content } from 'antd/es/layout/layout'
 import { Modal } from 'antd'
 
 const INITIAL_TODO_INFO = {
@@ -48,6 +48,21 @@ const TodosPage: React.FC = () => {
     fetchTodos();
   }, [fetchTodos])
 
+  useEffect((): () => void => {
+    const interval: number = setInterval(async (): Promise<void> => {
+      try {
+        console.log('обновляем')
+        const response = await getTodos(filter);
+        setTodos(response.data);
+        setTodosCount(response.info ? response.info : INITIAL_TODO_INFO);
+      } catch (error) {
+        setModalText({ message: `Ошибка загрузки задач: ${error}` });
+      }
+    }, 5000);
+
+    return (): void => clearInterval(interval);
+  }, [filter]);
+
   useEffect((): void => {
     if (modalText.message) {
       openModal(modalText.message);
@@ -57,11 +72,6 @@ const TodosPage: React.FC = () => {
 
   return (
     <Layout className='container'>
-      <Header className='header'>
-        <h2>
-          ToDo
-        </h2>
-      </Header>
       <Content className='content'>
         <AddTaskForm
           onOpenModalError={(textError: string): void => setModalText({ message: textError })}
