@@ -6,7 +6,7 @@ export const addTodo = async (todo: TodoRequest): Promise<Todo> => {
   try {
     const response = await instance({
       method: 'POST',
-      url: `/todosfff`,
+      url: `/todos`,
       data: JSON.stringify(todo)
     })
     return response.data;
