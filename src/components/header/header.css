@@ -1,0 +1,41 @@
+.app-menu_layout {
+  width: 250px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: none;
+  z-index: 1;
+}
+
+.app-menu {
+  height: 100%;
+}
+
+.header {
+  background: none;
+  color: royalblue;
+  margin: 0;
+  padding-top: 20px;
+}
+
+.mobile_menu-button {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .mobile_menu-button {
+    display: block ! important;
+  }
+
+  .app-menu_layout {
+    height: auto;
+    top: 74px;
+    width: 100%;
+    visibility: hidden;
+  }
+
+  .mobile_menu-visible {
+    visibility: visible ! important;
+  }
+}

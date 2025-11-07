@@ -33,7 +33,7 @@ const AddTaskForm: React.FC<Props> = (props) => {
           {
             validator: (_: RuleObject, value: string): Promise<void> => {
               try {
-                const title = value?.trim();
+                const title: string = value?.trim();
                 validateTodo(title);
                 return Promise.resolve();
               } catch (error) {
@@ -61,4 +61,4 @@ const AddTaskForm: React.FC<Props> = (props) => {
   )
 }
 
-export default AddTaskForm
+export default React.memo(AddTaskForm)

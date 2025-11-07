@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import AddTaskForm from '../components/add-form/AddTaskForm'
-import TaskList from '../components/tasks-list/TaskList'
-import TaskSort from '../components/tasks-sort/TaskSort'
+import AddTaskForm from '../../components/add-form/AddTaskForm'
+import TaskList from '../../components/tasks-list/TaskList'
+import TaskSort from '../../components/tasks-sort/TaskSort'
 import './todoPage.css'
-import { getTodos } from '../api/tasks-api'
-import type { Todo, TodoInfo, TodoStatus } from '../types/todo.types'
-import type { ErrorMessage } from '../types/error.types'
+import { getTodos } from '../../api/tasks-api'
+import type { Todo, TodoInfo, TodoStatus } from '../../types/todo.types'
+import type { ErrorMessage } from '../../types/error.types'
 import { Layout } from 'antd'
 import { Content } from 'antd/es/layout/layout'
 import { Modal } from 'antd'
@@ -23,6 +23,11 @@ const TodosPage: React.FC = () => {
   const [todosCount, setTodosCount] = useState<TodoInfo | typeof INITIAL_TODO_INFO>(INITIAL_TODO_INFO)
   const [filter, setFilter] = useState<TodoStatus>('all')
   const [loading, setLoading] = useState<boolean>(true)
+
+  const handleOpenModalError = useCallback(
+    (textError: string) => setModalText({ message: textError }),
+    []
+  );
 
   const openModal = (textError: string): void => {
     Modal.error({
@@ -73,7 +78,7 @@ const TodosPage: React.FC = () => {
     <Layout className='container'>
       <Content className='content'>
         <AddTaskForm
-          onOpenModalError={(textError: string): void => setModalText({ message: textError })}
+          onOpenModalError={handleOpenModalError}
           startLoadingTasks={fetchTodos}
         ></AddTaskForm>
         <TaskSort

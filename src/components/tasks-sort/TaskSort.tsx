@@ -1,6 +1,7 @@
 import type { TodoInfo, TodoStatus } from "../../types/todo.types"
 import "./taskSort.css"
 import { Button, Flex } from 'antd';
+import React from "react";
 
 interface Props {
   filter: TodoStatus,
@@ -33,4 +34,4 @@ const TaskSort: React.FC<Props> = (props) => {
   )
 }
 
-export default TaskSort
+export default TaskSort;

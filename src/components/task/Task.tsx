@@ -1,4 +1,5 @@
 import { useState } from "react"
+import React from "react"
 import "./task.css"
 import { deleteTodo, editTodo } from "../../api/tasks-api";
 import type { Todo } from "../../types/todo.types";
@@ -155,4 +156,4 @@ const Task: React.FC<Props> = (props) => {
   )
 }
 
-export default Task
+export default Task;
