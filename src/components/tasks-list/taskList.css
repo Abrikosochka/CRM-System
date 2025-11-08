@@ -1,9 +1,10 @@
 .tasks-list {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: start;
   align-items: center;
-  text-align: center;
   gap: 20px;
+  background: none;
   margin-top: 20px;
+  padding: 10px;
 }

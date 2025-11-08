@@ -1,9 +1,12 @@
 import { useState } from "react"
+import React from "react"
 import "./task.css"
 import { deleteTodo, editTodo } from "../../api/tasks-api";
 import type { Todo } from "../../types/todo.types";
 import { validateTodo } from "../../helpers/validation";
-import { Icon } from "../icon/Icon";
+import { Button, Checkbox, Form, Input, Layout, ConfigProvider } from 'antd';
+import { CloseOutlined, DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
+import type { RuleObject } from "antd/es/form";
 
 interface Props {
   onOpenModalError: (errorText: string) => void,
@@ -13,35 +16,38 @@ interface Props {
 
 const Task: React.FC<Props> = (props) => {
 
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [form] = Form.useForm<{ title: string }>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
-  const [inputTitle, setInputTitle] = useState<string>(props.todo.title)
 
-  const handleClickUpdateTodoStatus = async (e: React.FormEvent): Promise<void> => {
-    e.preventDefault();
+  const handleClickUpdateTodoStatus = async (): Promise<void> => {
     try {
       setIsLoading(true);
-      await editTodo(props.todo.id, { isDone: !props.todo.isDone, title: inputTitle });
+      await editTodo(props.todo.id, { isDone: !props.todo.isDone, title: props.todo.title });
       props.startLoadingTasks();
     } catch (e: unknown) {
       if (e instanceof Error) props.onOpenModalError(e.message)
     } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500)
     }
   }
 
   const handleOpenUpdateTodo = (): void => {
     setIsUpdating(true)
+    form.setFieldsValue({
+      title: props.todo.title
+    })
   }
 
-  const handleClickUpdateTodoTitle = async (e: React.FormEvent): Promise<void> => {
-    e.preventDefault()
+  const handleClickUpdateTodoTitle = async (): Promise<void> => {
     try {
       setIsLoading(true);
-      const title = inputTitle.trim();
-      validateTodo(title);
+      const title = form.getFieldValue('title');
       await editTodo(props.todo.id, { isDone: props.todo.isDone, title: title });
       props.startLoadingTasks();
+      setIsUpdating(false);
     } catch (e: unknown) {
       if (e instanceof Error) props.onOpenModalError(e.message);
     } finally {
@@ -51,7 +57,9 @@ const Task: React.FC<Props> = (props) => {
 
   const handleCloseUpdateTodo = (): void => {
     setIsUpdating(false);
-    setInputTitle(props.todo.title);
+    form.setFieldsValue({
+      title: props.todo.title
+    })
   }
 
 
@@ -63,50 +71,90 @@ const Task: React.FC<Props> = (props) => {
       props.startLoadingTasks();
     } catch (e: unknown) {
       if (e instanceof Error) props.onOpenModalError(e.message);
-    } finally {
-      setIsLoading(false)
     }
   }
 
   return (
-    <form className="task">
-      {!isLoading ? <>
-        <div className="task-header">
-          <>
-            {!isUpdating && <input type="checkbox" name="complete" className="task_check"
-              checked={props.todo.isDone} onChange={handleClickUpdateTodoStatus}
-            />}
-            {isUpdating ?
-              <input className="task_change-input" type='text' value={inputTitle}
-                onChange={(e) => setInputTitle(e.target.value)}>
-              </input>
-              :
-              <p className={`${props.todo.isDone ? 'task-header-is-done' : ''}`}>{props.todo.title}</p>
-            }
-          </>
-        </div>
-        <div className="task-buttons">
+    <Form form={form} className="task" disabled={isLoading} onFinish={handleClickUpdateTodoTitle}>
+      <Layout className="task-header" >
+        <>
+          {isUpdating ?
+            <Form.Item
+              name="title"
+              rules={[
+                {
+                  validator: (_: RuleObject, value: string): Promise<void> => {
+                    try {
+                      const title = value?.trim();
+                      validateTodo(title);
+                      return Promise.resolve();
+                    } catch (error) {
+                      if (error instanceof Error) {
+                        return Promise.reject(error.message);
+                      }
+                      return Promise.reject('Ошибка валидации');
+                    }
+                  },
+                },
+              ]}
+            >
+              <Input
+                name="title"
+                placeholder='Введите название задачи...'
+                className="task_change-input"
+              >
+              </Input>
+            </Form.Item>
+            :
+            <Form.Item className="checkbox">
+              <Checkbox
+                type="checkbox"
+                name="complete"
+                checked={props.todo.isDone}
+                onChange={handleClickUpdateTodoStatus}
+                className={`${props.todo.isDone ? 'task-header-is-done' : ''}`}
+              >
+                {props.todo.title}
+              </Checkbox>
+            </Form.Item>
+          }
+        </>
+      </Layout>
+      <Layout className="task-buttons">
+        <ConfigProvider>
           {!isUpdating ?
-            <button className="task-buttons_button edit"
+            <Button
               onClick={handleOpenUpdateTodo}
-            ><Icon icon="Edit" ></Icon></button> :
+              icon={<EditOutlined />}
+              type="primary"
+            >
+            </Button> :
             <>
-              <button type="submit" className="task-buttons_button edit"
-                onClick={handleClickUpdateTodoTitle}
-              ><Icon icon="Save" ></Icon></button>
-              <button className="task-buttons_button edit"
+              <Button
+                htmlType="submit"
+                icon={<SaveOutlined />}
+                type="primary"
+              >
+              </Button>
+              <Button
                 onClick={handleCloseUpdateTodo}
-              ><Icon icon="Close" ></Icon></button>
+                icon={<CloseOutlined />}
+                type="primary"
+              >
+              </Button>
             </>
           }
-
-          <button type="submit" className="task-buttons_button delete"
+          <Button
+            type="primary"
+            htmlType="submit"
             onClick={handleClickDeleteTodo}
-          ><Icon icon="Delete" ></Icon></button>
-        </div>
-      </> : 'Loading...'}
-    </form>
+            icon={<DeleteOutlined />}
+            danger
+          />
+        </ConfigProvider>
+      </Layout>
+    </Form>
   )
 }
 
-export default Task
+export default Task;

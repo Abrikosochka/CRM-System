@@ -3,10 +3,10 @@ export const validateTodo = (todoText: string | undefined): void => {
     throw new Error('Задаче нужно название');
   } else {
     if (todoText.length < 2) {
-      throw new Error('Минимальная длина текста 2 символа');
+      throw new Error('Минимальная длина 2 символа');
     }
     if (todoText.length > 64) {
-      throw new Error('Максимальная длина текста 64 символа');
+      throw new Error('Максимальная длина 64 символа');
     }
   }
 }

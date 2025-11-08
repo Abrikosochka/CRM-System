@@ -1,0 +1,43 @@
+.app-layout {
+  display: flex;
+  width: 100vw;
+  background: none;
+  height: 100%;
+}
+
+.app-content {
+  background: none;
+  max-width: 100vw;
+}
+
+header,
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+main {
+  gap: 20px;
+}
+
+
+@media (max-width: 768px) {
+  header {
+    align-items: start;
+    padding-left: 5% !important;
+    padding-right: 5% !important;
+    padding-bottom: 10px !important;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    height: auto;
+    top: 74px;
+    width: auto;
+
+    & button {
+      margin: 0 !important;
+    }
+  }
+}
