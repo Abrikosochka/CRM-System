@@ -17,7 +17,7 @@ interface Props {
 const Task: React.FC<Props> = (props) => {
 
   const [form] = Form.useForm<{ title: string }>();
-  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isUpdating, setIsUpdating] = useState<boolean>(false);
 
   const handleClickUpdateTodoStatus = async (): Promise<void> => {
@@ -28,7 +28,9 @@ const Task: React.FC<Props> = (props) => {
     } catch (e: unknown) {
       if (e instanceof Error) props.onOpenModalError(e.message)
     } finally {
-      setIsLoading(false);
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500)
     }
   }
 
@@ -45,6 +47,7 @@ const Task: React.FC<Props> = (props) => {
       const title = form.getFieldValue('title');
       await editTodo(props.todo.id, { isDone: props.todo.isDone, title: title });
       props.startLoadingTasks();
+      setIsUpdating(false);
     } catch (e: unknown) {
       if (e instanceof Error) props.onOpenModalError(e.message);
     } finally {
@@ -68,8 +71,6 @@ const Task: React.FC<Props> = (props) => {
       props.startLoadingTasks();
     } catch (e: unknown) {
       if (e instanceof Error) props.onOpenModalError(e.message);
-    } finally {
-      setIsLoading(false)
     }
   }
 

@@ -3,7 +3,7 @@ import TodosPage from './pages/todo-page/TodoPage'
 import { ProfilePage } from './pages/profile-page/ProfilePage'
 import './App.css';
 import Layout from 'antd/es/layout/layout';
-import { AppHeader } from './components/header/Header';
+import { AppHeader } from './components/header/AppHeader';
 
 function App() {
 

@@ -23,6 +23,7 @@ const TodosPage: React.FC = () => {
   const [todosCount, setTodosCount] = useState<TodoInfo | typeof INITIAL_TODO_INFO>(INITIAL_TODO_INFO)
   const [filter, setFilter] = useState<TodoStatus>('all')
   const [loading, setLoading] = useState<boolean>(true)
+  const [reloadTimeout, setReloadTimeout] = useState<number>()
 
   const handleOpenModalError = useCallback(
     (textError: string) => setModalText({ message: textError }),
@@ -38,34 +39,38 @@ const TodosPage: React.FC = () => {
 
   const fetchTodos = useCallback(async (): Promise<void> => {
     try {
-      setLoading(true);
       const response = await getTodos(filter);
       setTodos(response.data);
       setTodosCount(response.info ? response.info : INITIAL_TODO_INFO);
     } catch (error) {
       setModalText({ message: `Ошибка загрузки задач: ${error}` });
-    } finally {
-      setLoading(false)
     }
   }, [filter]);
 
+  const debounceReloadTasks = useCallback(() => {
+    if (reloadTimeout) {
+      clearTimeout(reloadTimeout)
+    }
+
+    const timeout = setTimeout(() => {
+      fetchTodos();
+    }, 500);
+
+    setReloadTimeout(timeout);
+  }, [fetchTodos, reloadTimeout])
+
   useEffect((): void => {
     fetchTodos();
+    setLoading(false);
   }, [fetchTodos])
 
   useEffect((): () => void => {
     const interval: number = setInterval(async (): Promise<void> => {
-      try {
-        const response = await getTodos(filter);
-        setTodos(response.data);
-        setTodosCount(response.info ? response.info : INITIAL_TODO_INFO);
-      } catch (error) {
-        setModalText({ message: `Ошибка загрузки задач: ${error}` });
-      }
+      fetchTodos();
     }, 5000);
 
     return (): void => clearInterval(interval);
-  }, [filter]);
+  }, [filter, fetchTodos]);
 
   useEffect((): void => {
     if (modalText.message) {
@@ -90,7 +95,7 @@ const TodosPage: React.FC = () => {
           loading={loading}
           filter={filter}
           onOpenModalError={(textError: string): void => setModalText({ message: textError })}
-          startLoadingTasks={fetchTodos}
+          startLoadingTasks={debounceReloadTasks}
           todos={todos}
         ></TaskList>
       </Content>

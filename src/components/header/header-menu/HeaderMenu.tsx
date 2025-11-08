@@ -8,7 +8,7 @@ import {
 import type { MenuProps } from 'antd';
 import { Button, Menu, Layout } from 'antd';
 import React, { useRef, useState } from 'react'
-import "../header.css"
+import "./headerMenu.css"
 
 export const HeaderMenu: React.FC = () => {
   const navigate: NavigateFunction = useNavigate()
