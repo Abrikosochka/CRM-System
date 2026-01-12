@@ -12,7 +12,7 @@ export const addTodo = async (todo: TodoRequest): Promise<Todo> => {
     return response.data;
   } catch (error) {
     if (error instanceof Error) throw new Error("Ошибка HTTP: " + error.message);
-    else throw new Error("Ошибка при добавлении задачи")
+    throw new Error("Ошибка при добавлении задачи");
   }
 }
 
@@ -28,7 +28,7 @@ export const getTodos = async (todoInfo: TodoStatus = 'all'): Promise<MetaRespon
     return response.data;
   } catch (error) {
     if (error instanceof Error) throw new Error("Ошибка HTTP: " + error.message);
-    else throw new Error("Ошибка при получении задач")
+    throw new Error("Ошибка при получении задач");
   }
 }
 
@@ -40,7 +40,7 @@ export const deleteTodo = async (todoId: Todo["id"]): Promise<void> => {
     })
   } catch (error) {
     if (error instanceof Error) throw new Error("Ошибка HTTP: " + error.message);
-    else throw new Error("Ошибка при удалении задачи")
+    throw new Error("Ошибка при удалении задачи");
   }
 }
 
@@ -54,6 +54,6 @@ export const editTodo = async (id: Todo["id"], todoData: TodoRequest): Promise<T
     return result.data;
   } catch (error) {
     if (error instanceof Error) throw new Error("Ошибка HTTP: " + error.message);
-    else throw new Error("Ошибка при редактировании задачи")
+    throw new Error("Ошибка при редактировании задачи");
   }
 }
