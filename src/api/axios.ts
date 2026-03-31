@@ -7,7 +7,11 @@ export interface RetryAxiosRequestConfig extends AxiosRequestConfig {
   _isRetry?: boolean;
 }
 
-export let accessToken: string | null = null;
+let accessToken: string | null = null;
+
+const authPaths = ['/auth/signin', '/auth/signup', '/auth/refresh'];
+
+export const getAccessToken = (): string | null => accessToken;
 
 export const setAccessToken = (token: string | null) => {
   accessToken = token;
@@ -20,8 +24,9 @@ export const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    if (accessToken) {
-      config.headers.Authorization = `Bearer ${accessToken}`;
+    const token = getAccessToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   }
@@ -32,15 +37,21 @@ instance.interceptors.response.use(
     return response;
   },
   async (error: AxiosError): Promise<AxiosInstance> => {
-    const original = error.config as AxiosRequestConfig;
+    const original = error.config as RetryAxiosRequestConfig;
 
-    if (original.url?.includes('/auth/refresh')) {
+    if (authPaths.some((url)=>original.url?.includes(url))) {
       return Promise.reject(error);
     }
 
     if (error.response?.status !== 401) {
       return Promise.reject(error);
     }
+
+    if (original._isRetry) {
+      return Promise.reject(error);
+    }
+
+    original._isRetry = true;
 
     try {
       const { accessToken: newToken, refreshToken: newRefreshToken } = await refresh(localStorage.getItem('token') as string);

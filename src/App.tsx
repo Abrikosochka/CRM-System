@@ -12,9 +12,9 @@ import { refresh } from './api/auth-api';
 import { setAccessToken } from './api/axios';
 import { useAppDispatch } from './hooks/reduxHooks';
 import { auth, loadingGetToken } from './store/authStore/authSlice';
-import { Flex, Spin } from 'antd';
 import { Navigate } from 'react-router';
-import { ErrorProvider } from './hooks/useError';
+import { ErrorProvider } from './hooks/ErrorProvider';
+import { LoadingSpinner } from './components/loading-spinner/LoadingSpinner';
 
 
 const App: React.FC = () => {
@@ -37,8 +37,7 @@ const App: React.FC = () => {
           if (location.pathname.startsWith('/auth')) {
             await navigate('/');
           }
-        } catch (error) {
-          console.error('Ошибка при обновлении токена:', error);
+        } catch {
           if (!location.pathname.startsWith('/auth')) {
             navigate('/auth');
           }
@@ -47,25 +46,14 @@ const App: React.FC = () => {
       }
     }
     getToken();
-  }, [])
+  }, [dispatch, isAuth, navigate])
 
   return (
     <ErrorProvider>
       <>
         {isAuth && <AppHeader />}
         {isLoading || isLoadingGetToken ?
-          <>
-            <Flex gap="middle" vertical style={{ width: '100%', height: '100vh', alignItems: "center", justifyContent: "center" }}>
-              <Flex>
-                <Spin tip="Loading" size="large">
-                  <div style={{
-                    padding: 50,
-                    borderRadius: 4,
-                  }} />
-                </Spin>
-              </Flex>
-            </Flex>
-          </>
+          <LoadingSpinner />
           :
           <Layout className="app-layout">
             <Layout className="app-content">

@@ -31,7 +31,7 @@ export const validateUsername = (username: string | undefined): void => {
   if (!username) {
     throw new Error('Введите имя пользователя');
   } else {
-    if(!/^[a-zA-Za-яА-ЯёЁ]+$/.test(username)){
+    if(!/^[a-zA-Zа-яА-ЯёЁ]+$/.test(username)){
       throw new Error('Только символы алфавита');
     }
     if (username.length > 60) {
@@ -40,15 +40,29 @@ export const validateUsername = (username: string | undefined): void => {
   }
 }
 
-export const validatePassword = (username: string | undefined): void => {
-  if (!username) {
+export const validatePassword = (password: string | undefined): void => {
+  if (!password) {
     throw new Error('Введите пароль');
   } else {
-    if (username.length < 6) {
+    if (password.length < 6) {
       throw new Error('Минимальная длина 6 символов');
     }
-    if (username.length > 60) {
+    if (password.length > 60) {
       throw new Error('Максимальная длина 60 символов');
     }
   }
 }
+
+import type { RuleObject } from 'antd/es/form';
+
+export const createAntValidator = (
+  validateFn: (value: string | undefined) => void
+) => (_: RuleObject, value: string): Promise<void> => {
+  try {
+    validateFn(value?.trim());
+    return Promise.resolve();
+  } catch (error) {
+    if (error instanceof Error) return Promise.reject(error.message);
+    return Promise.reject('Ошибка валидации');
+  }
+};

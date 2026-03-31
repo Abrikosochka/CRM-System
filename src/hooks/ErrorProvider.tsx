@@ -1,25 +1,15 @@
-import React, { createContext, useContext, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { Modal } from 'antd';
+import { ErrorContext } from './errorContext';
 
-interface ErrorContextType {
-  showError: (message: string) => void;
-}
-
-const ErrorContext = createContext<ErrorContextType | undefined>(undefined);
-
-export const useError = (): ErrorContextType => {
-  const context = useContext(ErrorContext);
-  if (!context) {
-    throw new Error('useError must be used within an ErrorProvider');
-  }
-  return context;
-};
-
-export const ErrorModal: React.FC<{
+interface ErrorModalProps {
   message: string;
   visible: boolean;
   onClose: () => void;
-}> = ({ message, visible, onClose }) => {
+}
+
+const ErrorModal = ({ message, visible, onClose }: ErrorModalProps) => {
   return (
     <Modal
       title="Ошибка"
@@ -33,7 +23,11 @@ export const ErrorModal: React.FC<{
   );
 };
 
-export const ErrorProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+interface ErrorProviderProps {
+  children: ReactNode;
+}
+
+export const ErrorProvider = ({ children }: ErrorProviderProps) => {
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [isErrorModalVisible, setIsErrorModalVisible] = useState<boolean>(false);
 
@@ -47,12 +41,8 @@ export const ErrorProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     setErrorMessage('');
   };
 
-  const value = {
-    showError,
-  };
-
   return (
-    <ErrorContext.Provider value={value}>
+    <ErrorContext.Provider value={{ showError }}>
       {children}
       <ErrorModal
         message={errorMessage}

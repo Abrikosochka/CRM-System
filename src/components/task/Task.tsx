@@ -3,10 +3,9 @@ import React from "react"
 import "./task.css"
 import { deleteTodo, editTodo } from "../../api/tasks-api";
 import type { Todo } from "../../types/todo.types";
-import { validateTodo } from "../../helpers/validation";
+import { validateTodo, createAntValidator } from "../../helpers/validation";
 import { Button, Checkbox, Form, Input, Layout, ConfigProvider } from 'antd';
 import { CloseOutlined, DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
-import type { RuleObject } from "antd/es/form";
 
 interface Props {
   onOpenModalError: (errorText: string) => void,
@@ -71,6 +70,8 @@ const Task: React.FC<Props> = (props) => {
       props.startLoadingTasks();
     } catch (e: unknown) {
       if (e instanceof Error) props.onOpenModalError(e.message);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -83,18 +84,7 @@ const Task: React.FC<Props> = (props) => {
               name="title"
               rules={[
                 {
-                  validator: (_: RuleObject, value: string): Promise<void> => {
-                    try {
-                      const title = value?.trim();
-                      validateTodo(title);
-                      return Promise.resolve();
-                    } catch (error) {
-                      if (error instanceof Error) {
-                        return Promise.reject(error.message);
-                      }
-                      return Promise.reject('Ошибка валидации');
-                    }
-                  },
+                  validator: createAntValidator(validateTodo),
                 },
               ]}
             >
@@ -146,7 +136,7 @@ const Task: React.FC<Props> = (props) => {
           }
           <Button
             type="primary"
-            htmlType="submit"
+            htmlType="button"
             onClick={handleClickDeleteTodo}
             icon={<DeleteOutlined />}
             danger

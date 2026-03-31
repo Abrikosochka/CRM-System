@@ -4,7 +4,7 @@ interface initialState {
   isAuth: boolean;
   isLoading: boolean;
   isUpdateToken: boolean;
-};
+}
 
 const initialState: initialState = {
   isAuth: false,

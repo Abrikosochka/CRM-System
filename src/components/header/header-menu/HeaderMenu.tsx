@@ -33,8 +33,7 @@ export const HeaderMenu: React.FC = () => {
       localStorage.removeItem('token');
       dispatch(auth(false));
       navigate('/auth');
-    } catch (error) {
-      console.error('Ошибка при выходе из системы:', error);
+    } catch {
       localStorage.removeItem('token');
       dispatch(auth(false));
       navigate('/auth');

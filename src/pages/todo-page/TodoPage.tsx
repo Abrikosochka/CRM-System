@@ -7,9 +7,9 @@ import { getTodos } from '../../api/tasks-api'
 import type { Todo, TodoInfo, TodoStatus } from '../../types/todo.types'
 import { Layout } from 'antd'
 import { Content } from 'antd/es/layout/layout'
-import { Flex, Spin } from 'antd';
 import { useAppSelector } from '../../hooks/reduxHooks'
-import { useError } from '../../hooks/useError'
+import { useError } from '../../hooks/errorContext'
+import { LoadingSpinner } from '../../components/loading-spinner/LoadingSpinner'
 
 const INITIAL_TODO_INFO = {
   all: 0,
@@ -72,17 +72,7 @@ const TodoPage: React.FC = () => {
 
   return (
     <>
-      {isLoading ? <>
-        <Flex gap="middle" vertical style={{ width: '100%', height: '100vh', alignItems: "center", justifyContent: "center" }}>
-          <Flex>
-            <Spin tip="Loading" size="large">
-              <div style={{
-                padding: 50,
-                borderRadius: 4,
-              }} />
-            </Spin>
-          </Flex>
-        </Flex> </> :
+      {isLoading ? <LoadingSpinner /> :
         <Layout className='container'>
           <Content className='content'>
             <AddTaskForm

@@ -7,7 +7,7 @@ export const signin = async (userAuthData: AuthData): Promise<Token> => {
     const response = await instance({
       method: 'POST',
       url: `/auth/signin`,
-      data: JSON.stringify(userAuthData),
+      data: userAuthData,
     })
     return response.data;
   } catch (error) {
@@ -22,7 +22,7 @@ export const signup = async (userRegistrationData: UserRegistration): Promise<To
     const response = await instance({
       method: 'POST',
       url: `/auth/signup`,
-      data: JSON.stringify(userRegistrationData),
+      data: userRegistrationData,
     })
     return response.data;
   } catch (error) {
@@ -37,7 +37,7 @@ export const refresh = async (refreshToken: string): Promise<Token> => {
     const response = await instance({
       method: 'POST',
       url: '/auth/refresh',
-      data: JSON.stringify({ refreshToken }),
+      data: { refreshToken },
     })
     return response.data;
   } catch (error) {

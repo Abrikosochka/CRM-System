@@ -1,59 +1,32 @@
 import type { TodoStatus, TodoInfo, Todo, TodoRequest } from "../types/todo.types";
 import type { MetaResponse } from "../types/todo.api";
 import { instance } from "./axios";
+import { apiRequest } from "./apiHelpers";
 
 export const addTodo = async (todo: TodoRequest): Promise<Todo> => {
-  try {
-    const response = await instance({
-      method: 'POST',
-      url: `/todos`,
-      data: JSON.stringify(todo)
-    })
-    return response.data;
-  } catch (error) {
-    if (error instanceof Error) throw new Error("Ошибка HTTP: " + error.message);
-    throw new Error("Ошибка при добавлении задачи");
-  }
+  return apiRequest(
+    () => instance({ method: 'POST', url: `/todos`, data: todo }).then(res => res.data),
+    "Ошибка при добавлении задачи"
+  );
 }
 
 export const getTodos = async (todoInfo: TodoStatus = 'all'): Promise<MetaResponse<Todo, TodoInfo>> => {
-  try {
-    const response = await instance({
-      method: 'GET',
-      url: `/todos`,
-      params: {
-        filter: todoInfo,
-      }
-    })
-    return response.data;
-  } catch (error) {
-    if (error instanceof Error) throw new Error("Ошибка HTTP: " + error.message);
-    throw new Error("Ошибка при получении задач");
-  }
+  return apiRequest(
+    () => instance({ method: 'GET', url: `/todos`, params: { filter: todoInfo } }).then(res => res.data),
+    "Ошибка при получении задач"
+  );
 }
 
 export const deleteTodo = async (todoId: Todo["id"]): Promise<void> => {
-  try {
-    await instance({
-      method: 'DELETE',
-      url: `/todos/${todoId}`,
-    })
-  } catch (error) {
-    if (error instanceof Error) throw new Error("Ошибка HTTP: " + error.message);
-    throw new Error("Ошибка при удалении задачи");
-  }
+  return apiRequest(
+    () => instance({ method: 'DELETE', url: `/todos/${todoId}` }).then(() => undefined),
+    "Ошибка при удалении задачи"
+  );
 }
 
 export const editTodo = async (id: Todo["id"], todoData: TodoRequest): Promise<Todo> => {
-  try {
-    const result = await instance({
-      method: 'PUT',
-      url: `/todos/${id}`,
-      data: JSON.stringify(todoData)
-    })
-    return result.data;
-  } catch (error) {
-    if (error instanceof Error) throw new Error("Ошибка HTTP: " + error.message);
-    throw new Error("Ошибка при редактировании задачи");
-  }
+  return apiRequest(
+    () => instance({ method: 'PUT', url: `/todos/${id}`, data: todoData }).then(res => res.data),
+    "Ошибка при редактировании задачи"
+  );
 }
