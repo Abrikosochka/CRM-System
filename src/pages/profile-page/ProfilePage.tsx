@@ -51,13 +51,12 @@ export const ProfilePage: React.FC = () => {
           }
         >
           {
-            <Card title="Информация о профиле"> 
-                <p>ID: {userInfo.id}</p>
+            <Card title="Информация о профиле">
                 <p>Имя пользователя: {userInfo.username}</p>
                 <p>Email: {userInfo.email}</p>
                 <p>Телефон: {userInfo.phoneNumber}</p>
             </Card>
-          } 
+          }
         </Layout>
       ) : (
         <LoadingSpinner />

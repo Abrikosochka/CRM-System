@@ -5,7 +5,6 @@ import { Button, Form, Input } from 'antd';
 import type { UserRegistration } from '../../../types/auth.api.ts';
 import { Typography } from 'antd';
 import { signup } from '../../../api/auth-api.ts';
-import { useNavigate } from 'react-router';
 import { useError } from '../../../hooks/errorContext'
 import type { RuleObject } from "antd/es/form";
 import { validateLogin, validatePassword, validateUsername, createAntValidator } from '../../../helpers/validation'
@@ -14,9 +13,12 @@ import '../loginForm.css';
 import axios from 'axios';
 import image from '../../../assets/auth/img.png'
 
-export const RegistrationForm: React.FC = () => {
+interface Props {
+  onSuccess: () => void;
+}
+
+export const RegistrationForm: React.FC<Props> = ({ onSuccess }) => {
   const [form] = Form.useForm<UserRegistration>();
-  const navigate = useNavigate();
   const { showError } = useError();
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -34,7 +36,8 @@ export const RegistrationForm: React.FC = () => {
         phoneNumber: cleanPhoneNumber,
         username: UserRegistrationData.username
       });
-      navigate('/auth');
+
+      onSuccess();
     } catch (error: unknown) {
         if(axios.isAxiosError(error))
           showError(error.response?.data)
