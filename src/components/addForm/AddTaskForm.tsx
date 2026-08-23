@@ -1,4 +1,4 @@
-import { addTodo } from '../../api/tasks-api'
+import { addTodo } from '../../api/tasksApi.ts'
 import type { TodoRequest } from '../../types/todo.types'
 import { validateTodo, createAntValidator } from '../../helpers/validation'
 import './addTaskForm.css'

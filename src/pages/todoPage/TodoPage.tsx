@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useCallback } from 'react'
-import AddTaskForm from '../../components/add-form/AddTaskForm'
-import TaskList from '../../components/tasks-list/TaskList'
-import TaskSort from '../../components/tasks-sort/TaskSort'
+import AddTaskForm from '../../components/addForm/AddTaskForm'
+import TaskList from '../../components/tasksList/TaskList'
+import TaskSort from '../../components/tasksSort/TaskSort'
 import './todoPage.css'
-import { getTodos } from '../../api/tasks-api'
+import { getTodos } from '../../api/tasksApi.ts'
 import type { Todo, TodoInfo, TodoStatus } from '../../types/todo.types'
 import { Layout } from 'antd'
 import { Content } from 'antd/es/layout/layout'
-import { useAppSelector } from '../../hooks/reduxHooks'
+import { useAppSelector } from '../../store/reduxHooks'
 import { useError } from '../../hooks/errorContext'
-import { LoadingSpinner } from '../../components/loading-spinner/LoadingSpinner'
+import { LoadingSpinner } from '../../components/loadingSpinner/LoadingSpinner'
 
 const INITIAL_TODO_INFO = {
   all: 0,

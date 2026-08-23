@@ -1,36 +1,33 @@
-import { Route, Routes } from 'react-router'
-import TodoPage from './pages/todo-page/TodoPage'
-import { ProfilePage } from './pages/profile-page/ProfilePage'
+import { Route, Routes, Navigate, useNavigate } from 'react-router';
+import TodoPage from './pages/todoPage/TodoPage';
+import { ProfilePage } from './pages/profilePage/ProfilePage';
 import './App.css';
 import { Layout } from 'antd';
 import { AppHeader } from './components/header/AppHeader';
-import { useAppSelector } from './hooks/reduxHooks';
-import LoginPage from './pages/login-page/LoginPage';
+import { useAppSelector, useAppDispatch } from './store/reduxHooks';
+import LoginPage from './pages/loginPage/LoginPage';
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router';
-import { refresh } from './api/auth-api';
-import { setAccessToken } from './api/axios';
-import { useAppDispatch } from './hooks/reduxHooks';
-import { auth, loadingGetToken } from './store/authStore/authSlice';
-import { Navigate } from 'react-router';
+import { refreshAccessToken } from './api/authApi.ts';
+import { setAccessToken } from './api/tokenService';
+import { auth, setIsUpdateToken } from './store/authStore/authSlice';
 import { ErrorProvider } from './hooks/ErrorProvider';
-import { LoadingSpinner } from './components/loading-spinner/LoadingSpinner';
-
+import { LoadingSpinner } from './components/loadingSpinner/LoadingSpinner';
 
 const App: React.FC = () => {
-  const isAuth: boolean = useAppSelector(state => state.auth.isAuth)
-  const isLoading: boolean = useAppSelector(state => state.auth.isLoading)
-  const isLoadingGetToken: boolean = useAppSelector(state => state.auth.isUpdateToken)
+  const isAuth: boolean = useAppSelector((state) => state.auth.isAuth);
+  const isLoading: boolean = useAppSelector((state) => state.auth.isLoading);
+  const isLoadingGetToken: boolean = useAppSelector((state) => state.auth.isUpdateToken);
   const isAppReady = isAuth && !isLoading && !isLoadingGetToken;
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    const getToken = async () => {
+    const restoreSession = async () => {
       if (!isAuth) {
-        dispatch(loadingGetToken(true));
+        dispatch(setIsUpdateToken(true));
         try {
-          const response = await refresh(localStorage.getItem('token') || '');
+          const storedRefreshToken = localStorage.getItem('token') || '';
+          const response = await refreshAccessToken(storedRefreshToken);
           setAccessToken(response.accessToken);
           localStorage.setItem('token', response.refreshToken);
           dispatch(auth(true));
@@ -42,32 +39,41 @@ const App: React.FC = () => {
             navigate('/auth');
           }
         }
-        dispatch(loadingGetToken(false));
+        dispatch(setIsUpdateToken(false));
       }
-    }
-    getToken();
-  }, [dispatch, isAuth, navigate])
+    };
+    restoreSession();
+  }, [dispatch, isAuth, navigate]);
 
   return (
     <ErrorProvider>
       <>
         {isAuth && <AppHeader />}
-        {isLoading || isLoadingGetToken ?
+        {isLoading || isLoadingGetToken ? (
           <LoadingSpinner />
-          :
+        ) : (
           <Layout className="app-layout">
             <Layout className="app-content">
               <Routes>
-                <Route path='/' element={isAppReady ? <TodoPage /> : <Navigate to="/auth" replace />}></Route>
-                <Route path='/profile' element={isAppReady ? <ProfilePage /> : <Navigate to="/auth" replace />}></Route>
-                <Route path='/auth/*' element={!isAuth ? <LoginPage /> : <Navigate to="/" />}></Route>
+                <Route
+                  path="/"
+                  element={isAppReady ? <TodoPage /> : <Navigate to="/auth" replace />}
+                />
+                <Route
+                  path="/profile"
+                  element={isAppReady ? <ProfilePage /> : <Navigate to="/auth" replace />}
+                />
+                <Route
+                  path="/auth/*"
+                  element={!isAuth ? <LoginPage /> : <Navigate to="/" />}
+                />
               </Routes>
             </Layout>
           </Layout>
-        }
+        )}
       </>
     </ErrorProvider>
-  )
-}
+  );
+};
 
-export default App
+export default App;

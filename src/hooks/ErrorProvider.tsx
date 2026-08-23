@@ -1,54 +1,33 @@
 import type { ReactNode } from 'react';
-import { useState } from 'react';
-import { Modal } from 'antd';
+import { notification } from 'antd';
 import { ErrorContext } from './errorContext';
 
-interface ErrorModalProps {
-  message: string;
-  visible: boolean;
-  onClose: () => void;
-}
-
-const ErrorModal = ({ message, visible, onClose }: ErrorModalProps) => {
-  return (
-    <Modal
-      title="Ошибка"
-      open={visible}
-      onCancel={onClose}
-      footer={null}
-      centered
-    >
-      <p>{message}</p>
-    </Modal>
-  );
-};
-
-interface ErrorProviderProps {
+interface Props {
   children: ReactNode;
 }
 
-export const ErrorProvider = ({ children }: ErrorProviderProps) => {
-  const [errorMessage, setErrorMessage] = useState<string>('');
-  const [isErrorModalVisible, setIsErrorModalVisible] = useState<boolean>(false);
+const formatErrorMessage = (message: unknown): string => {
+  if (typeof message === 'string') {
+    return message;
+  }
+  if (message && typeof message === 'object' && 'message' in message) {
+    return String((message as { message: unknown }).message);
+  }
+  return 'Неизвестная ошибка';
+};
 
-  const showError = (message: string): void => {
-    setErrorMessage(message);
-    setIsErrorModalVisible(true);
-  };
-
-  const handleCloseErrorModal = (): void => {
-    setIsErrorModalVisible(false);
-    setErrorMessage('');
+export const ErrorProvider = ({ children }: Props) => {
+  const showError = (message: unknown): void => {
+    notification.error({
+      message: 'Ошибка',
+      description: formatErrorMessage(message),
+      placement: 'topRight',
+    });
   };
 
   return (
     <ErrorContext.Provider value={{ showError }}>
       {children}
-      <ErrorModal
-        message={errorMessage}
-        visible={isErrorModalVisible}
-        onClose={handleCloseErrorModal}
-      />
     </ErrorContext.Provider>
   );
 };

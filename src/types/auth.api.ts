@@ -1,9 +1,12 @@
-export interface UserRegistration {
-  login: string;
+export interface UserContacts {
   username: string;
-  password: string;
   email: string;
   phoneNumber: string;
+}
+
+export interface UserRegistration extends UserContacts {
+  login: string;
+  password: string;
 }
 
 export interface AuthData {
@@ -11,25 +14,13 @@ export interface AuthData {
   password: string;
 }
 
-export interface RefreshToken {
+export type ProfileRequest = UserContacts;
+
+export type PasswordRequest = Pick<AuthData, 'password'>;
+
+export interface Token {
+  accessToken: string;
   refreshToken: string;
 }
 
-
-export interface ProfileRequest {
-  username: string;
-  email: string;
-  phoneNumber: string;
-}
-
-export interface PasswordRequest {
-  password: string;
-}
-
-export interface Token {
-  accessToken: string
-  refreshToken: string
-}
-
-
-
+export type RefreshToken = Pick<Token, 'refreshToken'>;

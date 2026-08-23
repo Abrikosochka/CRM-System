@@ -1,32 +1,32 @@
-import { createSlice, type PayloadAction } from "@reduxjs/toolkit"
+import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 
-interface initialState {
+interface AuthState {
   isAuth: boolean;
   isLoading: boolean;
   isUpdateToken: boolean;
 }
 
-const initialState: initialState = {
+const initialState: AuthState = {
   isAuth: false,
   isLoading: false,
   isUpdateToken: true,
-}
+};
 
 const authSlice = createSlice({
-  name: "user",
-  initialState: initialState,
+  name: 'user',
+  initialState,
   reducers: {
-    auth: (state: initialState, action: PayloadAction<boolean>): void => {
+    auth: (state: AuthState, action: PayloadAction<boolean>): void => {
       state.isAuth = action.payload;
     },
-    loading: (state: initialState, action: PayloadAction<boolean>): void => {
+    loading: (state: AuthState, action: PayloadAction<boolean>): void => {
       state.isLoading = action.payload;
     },
-    loadingGetToken: (state: initialState, action: PayloadAction<boolean>): void => {
+    setIsUpdateToken: (state: AuthState, action: PayloadAction<boolean>): void => {
       state.isUpdateToken = action.payload;
-    }
-  }
-})
+    },
+  },
+});
 
-export const { auth, loading, loadingGetToken } = authSlice.actions;
+export const { auth, loading, setIsUpdateToken } = authSlice.actions;
 export const authReducer = authSlice.reducer;

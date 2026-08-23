@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react"
 import type { Profile } from "../../types/user.types"
-import { getProfile } from "../../api/user-api"
+import { getProfile } from "../../api/userApi.ts"
 import { Card, Layout, Result, Button } from "antd"
-import { LoadingSpinner } from "../../components/loading-spinner/LoadingSpinner"
+import { LoadingSpinner } from "../../components/loadingSpinner/LoadingSpinner"
 
 export const ProfilePage: React.FC = () => {
 

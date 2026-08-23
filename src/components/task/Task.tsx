@@ -1,7 +1,7 @@
 import { useState } from "react"
 import React from "react"
 import "./task.css"
-import { deleteTodo, editTodo } from "../../api/tasks-api";
+import { deleteTodo, editTodo } from "../../api/tasksApi.ts";
 import type { Todo } from "../../types/todo.types";
 import { validateTodo, createAntValidator } from "../../helpers/validation";
 import { Button, Checkbox, Form, Input, Layout, ConfigProvider } from 'antd';

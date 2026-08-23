@@ -1,6 +1,6 @@
-import LoginForm from "../../components/auth-forms/login-form/LoginForm";
+import LoginForm from "../../components/authForms/loginForm/LoginForm";
 import "./loginPage.css";
-import RegistrationForm from "../../components/auth-forms/registration-form/RegistrationForm";
+import RegistrationForm from "../../components/authForms/registrationForm/RegistrationForm";
 import {Route, Routes, useNavigate} from "react-router";
 import {useCallback, useEffect, useRef, useState} from "react";
 import {Modal} from "antd";
