@@ -25,8 +25,18 @@ const App: React.FC = () => {
     const restoreSession = async () => {
       if (!isAuth) {
         dispatch(setIsUpdateToken(true));
+        const storedRefreshToken = localStorage.getItem('token');
+
+        if (!storedRefreshToken || storedRefreshToken === 'undefined') {
+          localStorage.removeItem('token');
+          if (!location.pathname.startsWith('/auth')) {
+            navigate('/auth');
+          }
+          dispatch(setIsUpdateToken(false));
+          return;
+        }
+
         try {
-          const storedRefreshToken = localStorage.getItem('token') || '';
           const response = await refreshAccessToken(storedRefreshToken);
           setAccessToken(response.accessToken);
           localStorage.setItem('token', response.refreshToken);

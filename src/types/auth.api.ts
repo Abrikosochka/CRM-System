@@ -23,4 +23,9 @@ export interface Token {
   refreshToken: string;
 }
 
+export interface TokenResponse {
+  AccessToken: string;
+  RefreshToken: string;
+}
+
 export type RefreshToken = Pick<Token, 'refreshToken'>;

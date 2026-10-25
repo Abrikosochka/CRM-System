@@ -45,8 +45,9 @@ instance.interceptors.response.use(
     failedRequestConfig._isRetry = true;
 
     const storedRefreshToken = localStorage.getItem('token');
-    if (!storedRefreshToken) {
+    if (!storedRefreshToken || storedRefreshToken === 'undefined') {
       setAccessToken(null);
+      localStorage.removeItem('token');
       store.dispatch(auth(false));
       return Promise.reject(error);
     }
