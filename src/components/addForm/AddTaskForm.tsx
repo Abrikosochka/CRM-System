@@ -16,7 +16,7 @@ const AddTaskForm: React.FC<Props> = (props) => {
   const handleCreateTodo = async (): Promise<void> => {
     try {
       const title: string = form.getFieldValue('title');
-      await addTodo({ title: title, isDone: false });
+      await addTodo({ title });
       form.resetFields();
       props.startLoadingTasks();
     } catch (error: unknown) {

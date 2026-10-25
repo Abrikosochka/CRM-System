@@ -32,7 +32,11 @@ const TodoPage: React.FC = () => {
     try {
       const response = await getTodos(filter);
       setTodos(response.data);
-      setTodosCount(response.info ? response.info : INITIAL_TODO_INFO);
+      setTodosCount({
+        all: response.total,
+        inWork: response.meta.statusCounts.inProgress,
+        completed: response.meta.statusCounts.done,
+      });
     } catch (error) {
       showError(error);
     } finally {

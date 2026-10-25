@@ -22,7 +22,8 @@ const Task: React.FC<Props> = (props) => {
   const handleClickUpdateTodoStatus = async (): Promise<void> => {
     try {
       setIsLoading(true);
-      await editTodo(props.todo.id, { isDone: !props.todo.isDone, title: props.todo.title });
+      const status = props.todo.status === 'done' ? 'inProgress' : 'done';
+      await editTodo(props.todo.id, { title: props.todo.title, status });
       props.startLoadingTasks();
     } catch (e: unknown) {
       props.onOpenModalError(e)
@@ -44,7 +45,7 @@ const Task: React.FC<Props> = (props) => {
     try {
       setIsLoading(true);
       const title = form.getFieldValue('title');
-      await editTodo(props.todo.id, { isDone: props.todo.isDone, title: title });
+      await editTodo(props.todo.id, { title, status: props.todo.status });
       props.startLoadingTasks();
       setIsUpdating(false);
     } catch (e: unknown) {
@@ -100,9 +101,9 @@ const Task: React.FC<Props> = (props) => {
               <Checkbox
                 type="checkbox"
                 name="complete"
-                checked={props.todo.isDone}
+                checked={props.todo.status === 'done'}
                 onChange={handleClickUpdateTodoStatus}
-                className={`${props.todo.isDone ? 'task-header-is-done' : ''}`}
+                className={`${props.todo.status === 'done' ? 'task-header-is-done' : ''}`}
               >
                 {props.todo.title}
               </Checkbox>
