@@ -11,7 +11,6 @@ export { getAccessToken, setAccessToken } from './tokenService';
 
 export const instance = axios.create({
   baseURL: import.meta.env.VITE_APP_BACKEND,
-  withCredentials: true,
 });
 
 instance.interceptors.request.use((config) => {
