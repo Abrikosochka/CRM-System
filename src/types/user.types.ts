@@ -1,13 +1,11 @@
 export interface Profile {
   id: number;
-  username: string;
+  userName: string;
   email: string;
-  date: string;
-  isBlocked: boolean;
-  roles: Role[];
   phoneNumber: string;
+  birthday?: string;
+  roles: string[];
+  isBlocked: boolean;
+  createdAt: string;
+  updatedAt: string;
 }
-
-export type Role = 'ADMIN' | 'USER' | 'MODERATOR'
-
-

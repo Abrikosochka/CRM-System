@@ -4,7 +4,7 @@ import { instance } from './axios';
 export const getProfile = async (): Promise<Profile> => {
   const response = await instance({
     method: 'GET',
-    url: '/user/profile',
+    url: '/users/profile',
   });
   return response.data;
 };
