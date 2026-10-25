@@ -11,7 +11,6 @@ import {
 } from '../../../helpers/validation';
 import { PhoneInput } from '../../../shared/ui/phoneInput/PhoneInput.tsx';
 import '../loginForm/loginForm.css';
-import axios from 'axios';
 import image from '../../../assets/auth/img.png';
 
 interface Props {
@@ -42,9 +41,7 @@ export const RegistrationForm: React.FC<Props> = ({ onSuccess }) => {
 
       onSuccess();
     } catch (error: unknown) {
-      if (axios.isAxiosError(error)) {
-        showError(error.response?.data);
-      }
+      showError(error);
     } finally {
       setIsLoading(false);
     }

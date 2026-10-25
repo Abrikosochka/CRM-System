@@ -1,18 +1,29 @@
 import type { ReactNode } from 'react';
 import { notification } from 'antd';
+import axios from 'axios';
 import { ErrorContext } from './errorContext';
 
 interface Props {
   children: ReactNode;
 }
 
-const formatErrorMessage = (message: unknown): string => {
-  if (typeof message === 'string') {
-    return message;
+interface ApiErrorResponse {
+  error: string;
+}
+
+const formatErrorMessage = (error: unknown): string => {
+  if (axios.isAxiosError<ApiErrorResponse>(error)) {
+    if (!error.response) {
+      return 'Не удалось подключиться к серверу';
+    }
+
+    return error.response.data.error;
   }
-  if (message && typeof message === 'object' && 'message' in message) {
-    return String((message as { message: unknown }).message);
+
+  if (error instanceof Error) {
+    return error.message;
   }
+
   return 'Неизвестная ошибка';
 };
 

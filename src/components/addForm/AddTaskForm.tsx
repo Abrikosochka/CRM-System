@@ -6,7 +6,7 @@ import React from 'react'
 import { Button, Form, Input } from 'antd';
 
 interface Props {
-  onOpenModalError: (textError: string) => void,
+  onOpenModalError: (error: unknown) => void,
   startLoadingTasks: () => void
 }
 
@@ -20,7 +20,7 @@ const AddTaskForm: React.FC<Props> = (props) => {
       form.resetFields();
       props.startLoadingTasks();
     } catch (error: unknown) {
-      if (error instanceof Error) props.onOpenModalError(error.message)
+      props.onOpenModalError(error)
     }
   }
 

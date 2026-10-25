@@ -9,7 +9,6 @@ import { auth, loading } from '../../../store/authStore/authSlice.ts';
 import { setAccessToken } from '../../../api/tokenService.ts';
 import { useNavigate } from 'react-router';
 import { validateLogin, validatePassword, createAntValidator } from '../../../helpers/validation.ts';
-import axios from 'axios';
 import { useError } from '../../../hooks/errorContext';
 import image from '../../../assets/auth/img.png';
 
@@ -27,9 +26,7 @@ export const LoginForm: React.FC = () => {
       dispatch(auth(true));
       await navigate('/');
     } catch (error) {
-      if (axios.isAxiosError(error)) {
-        showError(error.response?.data);
-      }
+      showError(error);
     } finally {
       dispatch(loading(false));
     }

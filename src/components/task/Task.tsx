@@ -8,7 +8,7 @@ import { Button, Checkbox, Form, Input, Layout, ConfigProvider } from 'antd';
 import { CloseOutlined, DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
 
 interface Props {
-  onOpenModalError: (errorText: string) => void,
+  onOpenModalError: (error: unknown) => void,
   todo: Todo,
   startLoadingTasks: () => void
 }
@@ -25,7 +25,7 @@ const Task: React.FC<Props> = (props) => {
       await editTodo(props.todo.id, { isDone: !props.todo.isDone, title: props.todo.title });
       props.startLoadingTasks();
     } catch (e: unknown) {
-      if (e instanceof Error) props.onOpenModalError(e.message)
+      props.onOpenModalError(e)
     } finally {
       setTimeout(() => {
         setIsLoading(false);
@@ -48,7 +48,7 @@ const Task: React.FC<Props> = (props) => {
       props.startLoadingTasks();
       setIsUpdating(false);
     } catch (e: unknown) {
-      if (e instanceof Error) props.onOpenModalError(e.message);
+      props.onOpenModalError(e);
     } finally {
       setIsLoading(false)
     }
@@ -69,7 +69,7 @@ const Task: React.FC<Props> = (props) => {
       await deleteTodo(props.todo.id);
       props.startLoadingTasks();
     } catch (e: unknown) {
-      if (e instanceof Error) props.onOpenModalError(e.message);
+      props.onOpenModalError(e);
     } finally {
       setIsLoading(false);
     }

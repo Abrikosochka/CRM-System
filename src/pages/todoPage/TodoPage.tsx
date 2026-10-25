@@ -34,7 +34,7 @@ const TodoPage: React.FC = () => {
       setTodos(response.data);
       setTodosCount(response.info ? response.info : INITIAL_TODO_INFO);
     } catch (error) {
-      showError(`Ошибка загрузки задач: ${error}`);
+      showError(error);
     } finally {
       setLoading(false);
     }
