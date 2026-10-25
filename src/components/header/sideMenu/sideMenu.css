@@ -18,7 +18,7 @@
 
 @media (max-width: 768px) {
   .mobile_menu-button {
-    display: block ! important;
+    display: block !important;
   }
 
   .app-menu_layout {
@@ -29,6 +29,6 @@
   }
 
   .mobile_menu-visible {
-    visibility: visible ! important;
+    visibility: visible !important;
   }
 }

@@ -1,15 +1,14 @@
 import { useState } from "react"
 import React from "react"
 import "./task.css"
-import { deleteTodo, editTodo } from "../../api/tasks-api";
+import { deleteTodo, editTodo } from "../../api/tasksApi.ts";
 import type { Todo } from "../../types/todo.types";
-import { validateTodo } from "../../helpers/validation";
+import { validateTodo, createAntValidator } from "../../helpers/validation";
 import { Button, Checkbox, Form, Input, Layout, ConfigProvider } from 'antd';
 import { CloseOutlined, DeleteOutlined, EditOutlined, SaveOutlined } from "@ant-design/icons";
-import type { RuleObject } from "antd/es/form";
 
 interface Props {
-  onOpenModalError: (errorText: string) => void,
+  onOpenModalError: (error: unknown) => void,
   todo: Todo,
   startLoadingTasks: () => void
 }
@@ -23,10 +22,11 @@ const Task: React.FC<Props> = (props) => {
   const handleClickUpdateTodoStatus = async (): Promise<void> => {
     try {
       setIsLoading(true);
-      await editTodo(props.todo.id, { isDone: !props.todo.isDone, title: props.todo.title });
+      const status = props.todo.status === 'done' ? 'inProgress' : 'done';
+      await editTodo(props.todo.id, { title: props.todo.title, status });
       props.startLoadingTasks();
     } catch (e: unknown) {
-      if (e instanceof Error) props.onOpenModalError(e.message)
+      props.onOpenModalError(e)
     } finally {
       setTimeout(() => {
         setIsLoading(false);
@@ -45,11 +45,11 @@ const Task: React.FC<Props> = (props) => {
     try {
       setIsLoading(true);
       const title = form.getFieldValue('title');
-      await editTodo(props.todo.id, { isDone: props.todo.isDone, title: title });
+      await editTodo(props.todo.id, { title, status: props.todo.status });
       props.startLoadingTasks();
       setIsUpdating(false);
     } catch (e: unknown) {
-      if (e instanceof Error) props.onOpenModalError(e.message);
+      props.onOpenModalError(e);
     } finally {
       setIsLoading(false)
     }
@@ -70,7 +70,9 @@ const Task: React.FC<Props> = (props) => {
       await deleteTodo(props.todo.id);
       props.startLoadingTasks();
     } catch (e: unknown) {
-      if (e instanceof Error) props.onOpenModalError(e.message);
+      props.onOpenModalError(e);
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -83,18 +85,7 @@ const Task: React.FC<Props> = (props) => {
               name="title"
               rules={[
                 {
-                  validator: (_: RuleObject, value: string): Promise<void> => {
-                    try {
-                      const title = value?.trim();
-                      validateTodo(title);
-                      return Promise.resolve();
-                    } catch (error) {
-                      if (error instanceof Error) {
-                        return Promise.reject(error.message);
-                      }
-                      return Promise.reject('Ошибка валидации');
-                    }
-                  },
+                  validator: createAntValidator(validateTodo),
                 },
               ]}
             >
@@ -110,9 +101,9 @@ const Task: React.FC<Props> = (props) => {
               <Checkbox
                 type="checkbox"
                 name="complete"
-                checked={props.todo.isDone}
+                checked={props.todo.status === 'done'}
                 onChange={handleClickUpdateTodoStatus}
-                className={`${props.todo.isDone ? 'task-header-is-done' : ''}`}
+                className={`${props.todo.status === 'done' ? 'task-header-is-done' : ''}`}
               >
                 {props.todo.title}
               </Checkbox>
@@ -146,7 +137,7 @@ const Task: React.FC<Props> = (props) => {
           }
           <Button
             type="primary"
-            htmlType="submit"
+            htmlType="button"
             onClick={handleClickDeleteTodo}
             icon={<DeleteOutlined />}
             danger

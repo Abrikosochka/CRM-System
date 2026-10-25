@@ -1,16 +1,18 @@
-import { StrictMode } from 'react'
+//import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.jsx'
+import App from './App.tsx'
 import { ConfigProvider } from 'antd'
 import { BrowserRouter } from 'react-router'
+import { Provider } from 'react-redux'
+import { store } from './store/index.ts'
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <ConfigProvider theme={{ token: { fontSize: 15 } }}>
-      <BrowserRouter>
+  <ConfigProvider theme={{ token: { fontSize: 15 } }}>
+    <BrowserRouter>
+      <Provider store={store}>
         <App />
-      </BrowserRouter>
-    </ConfigProvider>
-  </StrictMode>,
+      </Provider>
+    </BrowserRouter>
+  </ConfigProvider>
 )
