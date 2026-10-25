@@ -1,6 +1,6 @@
 import React from 'react';
 import type { FormProps } from 'antd';
-import { Button, Form, Image, Input, Space, Typography } from 'antd';
+import { Button, Form, Input, Space, Typography } from 'antd';
 import type { AuthData } from '../../../types/auth.api.ts';
 import './loginForm.css';
 import { signIn } from '../../../api/authApi.ts';
@@ -38,7 +38,7 @@ export const LoginForm: React.FC = () => {
   return (
     <div className="login-form">
       <div className="login-form__media">
-        <Image className="login-form__image" src={image} preview={false} />
+        <img className="login-form__image" src={image} alt="Login" />
       </div>
       <div className="login-form__form">
         <Form
@@ -76,8 +76,8 @@ export const LoginForm: React.FC = () => {
           </Form.Item>
 
           <Form.Item label={null}>
-            <Space direction="vertical" size="large">
-              <Button type="primary" size="large" htmlType="submit">
+            <Space direction="vertical" size="large" style={{ width: '100%' }}>
+              <Button type="primary" size="large" htmlType="submit" style={{ width: '30%' }}>
                 Войти
               </Button>
             </Space>

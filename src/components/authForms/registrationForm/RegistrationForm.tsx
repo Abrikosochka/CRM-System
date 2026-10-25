@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { type FormProps, Image, Button, Form, Input, Space, Typography } from 'antd';
+import { type FormProps, Button, Form, Input, Space, Typography } from 'antd';
 import type { UserRegistration } from '../../../types/auth.api.ts';
 import { signUp } from '../../../api/authApi.ts';
 import { useError } from '../../../hooks/errorContext';
@@ -53,7 +53,7 @@ export const RegistrationForm: React.FC<Props> = ({ onSuccess }) => {
   return (
     <div className="login-form">
       <div className="login-form__media">
-        <Image className="login-form__image" src={image} preview={false} />
+        <img className="login-form__image" src={image} alt="Registration" />
       </div>
       <div className="login-form__form">
         <Form
@@ -159,8 +159,8 @@ export const RegistrationForm: React.FC<Props> = ({ onSuccess }) => {
           </Form.Item>
 
           <Form.Item label={null}>
-            <Space direction="vertical" size="large">
-              <Button type="primary" htmlType="submit" size="large" loading={isLoading}>
+            <Space direction="vertical" size="large" style={{ width: '100%' }}>
+              <Button type="primary" style={{ width: '80%' }} htmlType="submit" size="large" loading={isLoading}>
                 Зарегистрироваться
               </Button>
             </Space>
