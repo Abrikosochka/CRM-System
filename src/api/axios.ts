@@ -5,7 +5,7 @@ import { auth } from '../store/authStore/authSlice';
 import { getAccessToken, setAccessToken } from './tokenService';
 import type { RetryAxiosRequestConfig } from '../types/axios.types';
 
-const authPaths = ['/auth/signin', '/auth/signup', '/auth/refresh'];
+const authPaths = ['/auth/signin', '/auth/signup', '/auth/refresh', '/auth/logout'];
 
 export { getAccessToken, setAccessToken } from './tokenService';
 

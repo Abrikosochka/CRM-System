@@ -13,6 +13,7 @@ import './sideMenu.css';
 import { useAppDispatch } from '../../../store/reduxHooks';
 import { auth } from '../../../store/authStore/authSlice.ts';
 import { performLogout } from '../../../api/userApi.ts';
+import { setAccessToken } from '../../../api/tokenService.ts';
 
 export const SideMenu: React.FC = () => {
   const navigate: NavigateFunction = useNavigate();
@@ -26,16 +27,23 @@ export const SideMenu: React.FC = () => {
   const handleLogout = async () => {
     if (isLoggingOut) return;
 
+    const completeLogout = () => {
+      setAccessToken(null);
+      localStorage.removeItem('token');
+      dispatch(auth(false));
+      navigate('/auth');
+    };
+
     setIsLoggingOut(true);
+    const refreshToken = localStorage.getItem('token');
+
     try {
-      await performLogout();
-      localStorage.removeItem('token');
-      dispatch(auth(false));
-      navigate('/auth');
+      if (refreshToken && refreshToken !== 'undefined') {
+        await performLogout(refreshToken);
+      }
+      completeLogout();
     } catch {
-      localStorage.removeItem('token');
-      dispatch(auth(false));
-      navigate('/auth');
+      completeLogout();
     } finally {
       setIsLoggingOut(false);
     }

@@ -9,9 +9,10 @@ export const getProfile = async (): Promise<Profile> => {
   return response.data;
 };
 
-export const performLogout = async (): Promise<void> => {
+export const performLogout = async (refreshToken: string): Promise<void> => {
   await instance({
     method: 'POST',
-    url: '/user/logout',
+    url: '/auth/logout',
+    data: { refreshToken },
   });
 };
