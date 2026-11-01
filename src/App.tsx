@@ -12,6 +12,8 @@ import { setAccessToken } from './api/tokenService';
 import { auth, setIsUpdateToken } from './store/authStore/authSlice';
 import { ErrorProvider } from './hooks/ErrorProvider';
 import { LoadingSpinner } from './components/loadingSpinner/LoadingSpinner';
+import { UsersPage } from './pages/usersPage/UsersPage';
+import { UserPage } from './pages/userPage/UserPage';
 
 const App: React.FC = () => {
   const isAuth: boolean = useAppSelector((state) => state.auth.isAuth);
@@ -72,6 +74,14 @@ const App: React.FC = () => {
                 <Route
                   path="/profile"
                   element={isAppReady ? <ProfilePage /> : <Navigate to="/auth" replace />}
+                />
+                <Route
+                  path="/users"
+                  element={isAppReady ? <UsersPage /> : <Navigate to="/auth" replace />}
+                />
+                <Route
+                  path="/users/:id"
+                  element={isAppReady ? <UserPage /> : <Navigate to="/auth" replace />}
                 />
                 <Route
                   path="/auth/*"

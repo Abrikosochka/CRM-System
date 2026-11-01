@@ -18,8 +18,8 @@ export const validateLogin = (login: string | undefined): void => {
     throw new Error('Введите логин');
   }
 
-  if (!/^[a-zA-Z]+$/.test(login)) {
-    throw new Error('Только символы латинского алфавита');
+  if (!/^[a-zA-Z-]+$/.test(login)) {
+    throw new Error('Только символы латинского алфавита и дефис');
   }
   if (login.length < 2) {
     throw new Error('Минимальная длина 2 символа');

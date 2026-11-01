@@ -1,44 +1,61 @@
-import { useNavigate, type NavigateFunction } from 'react-router';
+import { useLocation, useNavigate, type NavigateFunction } from "react-router";
 import {
   ProfileOutlined,
   UserOutlined,
+  TeamOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   LogoutOutlined,
-} from '@ant-design/icons';
-import type { MenuProps } from 'antd';
-import { Button, Menu, Layout } from 'antd';
-import React, { useRef, useState } from 'react';
-import './sideMenu.css';
-import { useAppDispatch } from '../../../store/reduxHooks';
-import { auth } from '../../../store/authStore/authSlice.ts';
-import { performLogout } from '../../../api/userApi.ts';
-import { setAccessToken } from '../../../api/tokenService.ts';
+} from "@ant-design/icons";
+import type { MenuProps } from "antd";
+import { Button, Menu, Layout } from "antd";
+import React, { useEffect, useRef, useState } from "react";
+import "./sideMenu.css";
+import { useAppDispatch } from "../../../store/reduxHooks";
+import { auth } from "../../../store/authStore/authSlice.ts";
+import { performLogout } from "../../../api/userApi.ts";
+import { setAccessToken } from "../../../api/tokenService.ts";
+import { getProfile } from "../../../api/userApi.ts";
 
 export const SideMenu: React.FC = () => {
   const navigate: NavigateFunction = useNavigate();
+  const location = useLocation();
   const dispatch = useAppDispatch();
 
   const [collapsed, setCollapsed] = useState<boolean>(true);
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const mobileButton = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    const checkAdminRole = async (): Promise<void> => {
+      try {
+        const profile = await getProfile();
+        setIsAdmin(profile.roles.includes("admin"));
+      } catch {
+        setIsAdmin(false);
+      }
+    };
+
+    checkAdminRole();
+  }, []);
 
   const handleLogout = async () => {
     if (isLoggingOut) return;
 
     const completeLogout = () => {
       setAccessToken(null);
-      localStorage.removeItem('token');
+      localStorage.removeItem("token");
       dispatch(auth(false));
-      navigate('/auth');
+      navigate("/auth");
     };
 
     setIsLoggingOut(true);
-    const refreshToken = localStorage.getItem('token');
+    const refreshToken = localStorage.getItem("token");
 
     try {
-      if (refreshToken && refreshToken !== 'undefined') {
+      if (refreshToken && refreshToken !== "undefined") {
         await performLogout(refreshToken);
       }
       completeLogout();
@@ -57,31 +74,48 @@ export const SideMenu: React.FC = () => {
     setCollapsed(false);
   };
 
-  const items: Required<MenuProps>['items'][number][] = [
+  const items: Required<MenuProps>["items"][number][] = [
     {
-      key: '1',
+      key: "1",
       icon: <ProfileOutlined />,
-      label: 'Список задач',
+      label: "Список задач",
       onClick: () => {
-        navigate('/');
+        navigate("/");
       },
     },
     {
-      key: '2',
+      key: "3",
       icon: <UserOutlined />,
-      label: 'Профиль',
+      label: "Профиль",
       onClick: () => {
-        navigate('/profile');
+        navigate("/profile");
       },
     },
     {
-      key: '3',
+      key: "4",
       icon: <LogoutOutlined />,
-      label: 'Выйти',
+      label: "Выйти",
       onClick: () => handleLogout(),
       danger: true,
     },
   ];
+
+  if (isAdmin) {
+    items.splice(1, 0, {
+      key: "2",
+      icon: <TeamOutlined />,
+      label: "Пользователи",
+      onClick: () => {
+        navigate("/users");
+      },
+    });
+  }
+
+  const selectedKey = location.pathname.startsWith("/users")
+    ? "2"
+    : location.pathname === "/profile"
+      ? "3"
+      : "1";
 
   const toggleMobileMenu = (): void => {
     setIsOpen(!isOpen);
@@ -98,12 +132,16 @@ export const SideMenu: React.FC = () => {
       >
         {isOpen ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
       </Button>
-      <Layout className={`app-menu_layout ${isOpen ? 'mobile_menu-visible' : ' '}`}>
+      <Layout
+        className={`app-menu_layout ${isOpen ? "mobile_menu-visible" : " "}`}
+      >
         <Menu
           className="app-menu"
-          defaultSelectedKeys={[document.location.pathname === '/profile' ? '2' : '1']}
+          selectedKeys={[selectedKey]}
           mode="inline"
-          inlineCollapsed={mobileButton.current?.offsetParent ? !isOpen : collapsed}
+          inlineCollapsed={
+            mobileButton.current?.offsetParent ? !isOpen : collapsed
+          }
           onMouseEnter={expandMenu}
           onMouseLeave={collapseMenu}
           items={items}
