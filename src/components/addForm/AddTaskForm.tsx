@@ -1,13 +1,12 @@
-import { addTodo } from '../../api/tasks-api'
+import { addTodo } from '../../api/tasksApi.ts'
 import type { TodoRequest } from '../../types/todo.types'
-import { validateTodo } from '../../helpers/validation'
+import { validateTodo, createAntValidator } from '../../helpers/validation'
 import './addTaskForm.css'
 import React from 'react'
 import { Button, Form, Input } from 'antd';
-import type { RuleObject } from 'antd/es/form'
 
 interface Props {
-  onOpenModalError: (textError: string) => void,
+  onOpenModalError: (error: unknown) => void,
   startLoadingTasks: () => void
 }
 
@@ -17,11 +16,11 @@ const AddTaskForm: React.FC<Props> = (props) => {
   const handleCreateTodo = async (): Promise<void> => {
     try {
       const title: string = form.getFieldValue('title');
-      await addTodo({ title: title, isDone: false });
+      await addTodo({ title });
       form.resetFields();
       props.startLoadingTasks();
     } catch (error: unknown) {
-      if (error instanceof Error) props.onOpenModalError(error.message)
+      props.onOpenModalError(error)
     }
   }
 
@@ -31,18 +30,7 @@ const AddTaskForm: React.FC<Props> = (props) => {
         name="title"
         rules={[
           {
-            validator: (_: RuleObject, value: string): Promise<void> => {
-              try {
-                const title: string = value?.trim();
-                validateTodo(title);
-                return Promise.resolve();
-              } catch (error) {
-                if (error instanceof Error) {
-                  return Promise.reject(error.message);
-                }
-                return Promise.reject('Ошибка валидации');
-              }
-            },
+            validator: createAntValidator(validateTodo),
           },
         ]}
         label={null}>

@@ -7,7 +7,7 @@ interface Props {
   loading: boolean,
   filter: TodoStatus,
   todos: Array<Todo> | null,
-  onOpenModalError: (textError: string) => void,
+  onOpenModalError: (error: unknown) => void,
   startLoadingTasks: () => void
 }
 
